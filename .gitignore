@@ -1,0 +1,28 @@
+# OpenServer
+*.osp
+
+# System files
+.DS_Store
+Thumbs.db
+
+# IDE / editors
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Configurations and secrets
+config.php
+.env
+db.php
+*.ini
+
+# Database dumps
+*.sql
+dump.sql
+
+# Cache, temporary files
+/cache/
+/tmp/
+log/
+*.log
