@@ -1,5 +1,12 @@
+<?php include 'config.php'; ?>
+...
+<?php if (isset($_SESSION['user_id'])): ?>
+    Hello, <?= htmlspecialchars($_SESSION['user_name']) ?>! <a href="dashboard.php">Account</a> | <a href="logout.php">Logout</a>
+<?php else: ?>
+    <a href="login.php">Login</a> | <a href="register.php">Registration</a>
+<?php endif; ?>
 <html>
-<head lang="ru">
+<head lang="en">
   <meta charset="UTF-8">
   <title>UNICORNS</title>
   <link rel="stylesheet" href="style.css">
@@ -9,24 +16,29 @@
 <body background="фон точно.png">
 <div id=h>Unicorn's World</div>
 <div id="soder">
-			<div class="soder">	
-				<span align="center"></span><a href="#Наши единороги"style="text-decoration: none;">Our Unicorns</span></a><br>
-				
-				<span align="center"><a href="#О нас"style="text-decoration: none;">About us<span></a><br>
+	<div class="soder">
+		<span align="center"></span><a href="login.php">Login</a>
+		<span align="center"></span><a href="register.php">Registration</a>
+		<span align="center"></span><a href="#Наши единороги" style="text-decoration: none;">Our Unicorns</span></a><br>
 
-				<span align="center"><a href="#Покупатели"style="text-decoration: none;">Future Customers<span></a><br>
+		<span align="center">
+			<a href="#О нас" style="text-decoration: none;">About us<span></a><br>
 
-				<span align="center"><a href="care.html"style="text-decoration: none;">Care<span></a><br>
-			
-				<span align="center"><a href="tombola.html"style="text-decoration: none;">Tombola</span></a><br>
+			<span align="center">
+				<a href="#Покупатели" style="text-decoration: none;">Future Customers<span></a><br>
 
-				<span align="center"><a href="review.html"style="text-decoration:none;">Reviews</span></a><br><br>
+				<span align="center">
+					<a href="care.html" style="text-decoration: none;">Care<span></a><br>
 
-				<a href="https://www.instagram.com/somethinginside_7" style="text-decoration:none;">@somethinginside_7</a><br>
+					<span align="center"><a href="tombola.html" style="text-decoration: none;">Tombola</span></a><br>
 
-				<a href="https://www.instagram.com/rachatop/" style="text-decoration:none;">@rachatop</a>
-			 
-			</div>
+					<span align="center"><a href="review.html" style="text-decoration:none;">Reviews</span></a><br><br>
+
+					<a href="https://www.instagram.com/somethinginside_7" style="text-decoration:none;">@somethinginside_7</a><br>
+
+					<a href="https://www.instagram.com/rachatop/" style="text-decoration:none;">@rachatop</a>
+
+	</div>
 		</div>
 
 	<main>
