@@ -35,24 +35,47 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 <head>
     <meta charset="UTF-8">
     <title>Login</title>
-    <style>
-        body { font-family: Arial, sans-serif; max-width: 500px; margin: 50px auto; padding: 20px; }
-        input, button { display: block; width: 100%; margin: 10px 0; padding: 10px; }
-        .error { color: red; }
-    </style>
+    <link rel="stylesheet" href="css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    
 </head>
 <body>
-    <h2>Login</h2>
+    <!-- иряър -->
+    <header class="site-header">
+        <a href="index.php" class="nav-btn main">Home</a>
+        <a href="products.php" class="nav-btn main">Shop</a>
+        <?php if (!isset($_SESSION['user_id'])): ?>
+            <a href="login.php" class="nav-btn auth">Login</a>
+            <a href="register.php" class="nav-btn auth">Register</a>
+        <?php endif; ?>
+    </header>
 
-    <?php if ($error): ?>
-        <div class="error"><?= htmlspecialchars($error) ?></div>
-    <?php endif; ?>
+    <div class="container">
+        <h2 style="text-align: center; margin: 30px 0; color: #2e2735;">Login</h2>
 
-    <form method="POST">
-        <input type="email" name="email" placeholder="Email" required>
-        <input type="password" name="password" placeholder="Password" required>
-        <button type="submit">Login</button>
-    </form>
-    <p>Do not have an account? <a href="register.php">Register</a></p>
+        <?php if ($error): ?>
+            <div class="message error"><?= htmlspecialchars($error) ?></div>
+        <?php endif; ?>
+
+        <form method="POST" style="max-width: 500px; margin: 0 auto;">
+            <div class="form-group">
+                <label for="email">Email</label>
+                <input type="email" name="email" id="email" class="form-control" required>
+            </div>
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" name="password" id="password" class="form-control" required>
+            </div>
+            <button type="submit" class="btn btn-primary" style="width: 100%;">Login</button>
+        </form>
+
+        <p style="text-align: center; margin-top: 20px;">
+            Do not have an account? <a href="register.php" class="btn btn-secondary" style="display: inline-block; padding: 8px 16px; font-size: 14px;">Register</a>
+        </p>
+    </div>
+
+    <footer class="site-footer">
+        <p>&copy; <?= date('Y') ?> Unicorns World. <a href="privacy.php">Privacy Policy</a></p>
+    </footer>
 </body>
 </html>

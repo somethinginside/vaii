@@ -8,6 +8,12 @@ if (!isset($_SESSION['user_id'])) {
 }
 
 $user = getCurrentUser();
+$orders = [];
+if ($user['role'] !== 'admin') {
+    $stmt = $pdo->prepare("SELECT * FROM `Order` WHERE user_id = ? ORDER BY `date` DESC");
+    $stmt->execute([$user['id']]);
+    $orders = $stmt->fetchAll(PDO::FETCH_ASSOC);
+}
 ?>
 
 <!DOCTYPE html>
@@ -15,54 +21,78 @@ $user = getCurrentUser();
 <head>
     <meta charset="UTF-8">
     <title>Profile</title>
-    <style>
-        body { font-family: Arial, sans-serif; margin: 50px; }
-        .header { display: flex; justify-content: space-between; margin-bottom: 30px; }
-        .user-info { background: #f0f0f0; padding: 20px; border-radius: 8px; }
-        .menu a { margin-right: 15px; text-decoration: none; color: blue; }
-    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">    
 </head>
 <body>
-    <div class="header">
-        <h2>Welcome, <?= htmlspecialchars($user['name']) ?>!</h2>
-        <div class="menu">
-            <a href="dashboard.php">Account</a>
-            <a href="logout.php">Logout</a>
+     <header class="site-header">
+        <a href="index.php" class="nav-btn main">Home</a>
+        <a href="products.php" class="nav-btn main">Shop</a>
+        <a href="cart.php" class="nav-btn auth">Cart</a>
+        <a href="dashboard.php" class="nav-btn auth">Account</a>
+        <a href="logout.php" class="nav-btn auth">Logout</a>
+    </header>
+
+    <div class="container">
+        <h2 style="margin: 30px 0; color: #2e2735;">Welcome, <?= htmlspecialchars($user['name']) ?>!</h2>
+
+        <div style="background: white; padding: 25px; border-radius: 14px; margin-bottom: 30px; box-shadow: 0 2px 8px rgba(0,0,0,0.08);">
+            <h3 style="margin-bottom: 15px; color: #766288;">Your data</h3>
+            <p><strong>Name:</strong> <?=htmlspecialchars($user['name']) ?></p>
+            <p><strong>Email:</strong> <?= htmlspecialchars($user['email']) ?></p>
+            <p><strong>Role:</strong> <?= htmlspecialchars($user['role']) ?></p>
+            <p><strong>Date of registration</strong> <?= $user['registration_date'] ?></p>
         </div>
+
+        <?php if ($user['role'] !== 'admin'): ?>
+
+            <h3 style="margin: 30px 0 20px; color: #2e2735;">Your orders</h3>
+            <?php if (count($orders) > 0): ?>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>є</th>
+                            <th>Date</th>
+                            <th>Sum</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php foreach ($orders as $order): ?>
+                            <tr>
+                                <td><?= $order['id'] ?></td>
+                                <td><?= $order['date'] ?></td>
+                                <td><?= number_format($order['total_price'], 2, ',', ' ') ?> eur.</td>
+                                <td>
+                                    <?php
+                                    $statusLabels = [
+                                        'created' => 'Created',
+                                        'shipped' => 'Shipped',
+                                        'can celled' => 'Can celled'
+                                    ];
+                                    echo $statusLabels[$order['status']] ?? $order['status'];
+                                    ?>
+                                </td>
+                            </tr>
+                        <?php endforeach; ?>
+                    </tbody>
+                </table>
+            <?php else: ?>
+                <p>You do not have any orders.</p>
+            <?php endif; ?>
+        <?php endif; ?>
+        <?php if ($user['role'] === 'admin'): ?>
+            <div style="margin-top: 30px;">
+                <h3 style="color: #2e2735;">Admins functions</h3>
+                <a href="admin_unicorns.php" class="btn btn-secondary">unicorns management</a>
+                <a href="admin_products.php" class="btn btn-secondary">product management</a>
+                <a href="admin_order.php" class="btn btn-secondary">check orders</a>
+            </div>
+        <?php endif; ?>
     </div>
 
-    <div class="user-info">
-        <p><strong>Email:</strong> <?= htmlspecialchars($user['email']) ?></p>
-        <p><strong>Role:</strong> <?= htmlspecialchars($user['role']) ?></p>
-        <p><strong>Registration date:</strong> <?= $user['registration_date'] ?></p>
-    </div>
-
-    <!-- ѕример: показать заказы пользовател€ -->
-    <?php
-    $stmt = $pdo->prepare("SELECT * FROM `Order` WHERE user_id = ? ORDER BY `date` DESC");
-    $stmt->execute([$user['id']]);
-    $orders = $stmt->fetchAll(PDO::FETCH_ASSOC);
-    ?>
-
-    <h3>Your orders:</h3>
-    <?php if (count($orders) > 0): ?>
-        <ul>
-        <?php foreach ($orders as $order): ?>
-            <li>Order є<?= $order['id'] ?> Ч <?= $order['total_price'] ?> eur. (<?= $order['status'] ?>)</li>
-        <?php endforeach; ?>
-        </ul>
-    <?php else: ?>
-        <p>You have no orders.</p>
-    <?php endif; ?>
-
-    <!-- ƒл€ администратора Ч дополнительные ссылки -->
-    <?php if ($user['role'] === 'admin'): ?>
-        <h3>Administrative functions</h3>
-        <ul>
-            <li><a href="#">Product management</a></li>
-            <li><a href="#">Check all orders</a></li>
-            <li><a href="admin_unicorns.php">Unicorn management</a></li>
-        </ul>
-    <?php endif; ?>
+    <footer class="site-footer">
+        <p>&copy; <?= date('Y') ?> Unicorns World. <a href="privacy.php">Privacy Policy</a></p>
+    </footer>
 </body>
 </html>

@@ -1,116 +1,66 @@
 <?php include 'config.php'; ?>
-...
-<?php if (isset($_SESSION['user_id'])): ?>
-    Hello, <?= htmlspecialchars($_SESSION['user_name']) ?>! <a href="dashboard.php">Account</a> | <a href="logout.php">Logout</a>
-<?php else: ?>
-    <a href="login.php">Login</a> | <a href="register.php">Registration</a>
-<?php endif; ?>
-<html>
-<head lang="en">
-  <meta charset="UTF-8">
-  <title>UNICORNS</title>
-  <link rel="stylesheet" href="style.css">
-  <!--<link rel="manifest" href="/manifest.json"/>-->
-  
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unicorns World</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
 </head>
-<body background="фон точно.png">
-<div id=h>Unicorn's World</div>
-<div id="soder">
-	<div class="soder">
-		<span align="center"></span><a href="login.php">Login</a>
-		<span align="center"></span><a href="register.php">Registration</a>
-		<span align="center"></span><a href="#Наши единороги" style="text-decoration: none;">Our Unicorns</span></a><br>
+<body>
+    <main class="site-main">
 
-		<span align="center">
-			<a href="#О нас" style="text-decoration: none;">About us<span></a><br>
+        <!-- Шапка -->
+        <header class="site-header">
+            <a href="index.php" class="nav-btn main">Home</a>
+            <a href="products.php" class="nav-btn main">Shop</a>
+            <a href="#about" class="nav-btn main">About</a>
+            <a href="#contact" class="nav-btn main">Contact</a>
+        
+            <?php if (isset($_SESSION['user_id'])): ?>
+                <?php
+                $cartCount = 0;
+                if (!empty($_SESSION['cart']['product'])) {
+                    $cartCount = array_sum($_SESSION['cart']['product']);
+                }
+                ?>
+                <a href="cart.php" class="nav-btn auth">
+                    Cart<?php if ($cartCount > 0): ?> (<?= $cartCount ?>)<?php endif; ?>
+                </a>
+                <a href="dashboard.php" class="nav-btn auth">Account</a>
+                <a href="logout.php" class="nav-btn auth">Logout</a>
+            <?php else: ?>
+                <a href="login.php" class="nav-btn auth">Login</a>
+                <a href="register.php" class="nav-btn auth">Register</a>
+            <?php endif; ?>
+        </header>
 
-			<span align="center">
-				<a href="#Покупатели" style="text-decoration: none;">Future Customers<span></a><br>
+        <!-- Контент -->
+        <div class="container">
+            <div class="hero" style="text-align: center; padding: 60px 0;">
+                <h1 style="font-size: 2.8rem; margin-bottom: 20px;">Discover Magical Unicorns</h1>
+                <p style="font-size: 1.2rem; margin-bottom: 30px; opacity: 0.9;">
+                    Explore our enchanted collection of accessories, gifts, and wonders for your mythical friends.
+                </p>
+                <div class="hero-buttons">
+                    <a href="products.php" class="btn btn-primary">Shop Now</a>
+                    <a href="#about" class="btn btn-secondary">Learn More</a>
+                </div>
+            </div>
+        </div>
+    </main>
 
-				<span align="center">
-					<a href="care.html" style="text-decoration: none;">Care<span></a><br>
+    <!-- Футер -->
+    <footer class="site-footer">
+        <div>
+            <p>&copy; <?= date('Y') ?> Unicorns World. All rights reserved.</p>
+            <p style="margin-top: 10px; font-size: 0.85rem;">
+                We care about your privacy. 
+                <a href="privacy.php">Privacy Policy</a>
+            </p>
+        </div>
+    </footer>
 
-					<span align="center"><a href="tombola.html" style="text-decoration: none;">Tombola</span></a><br>
-
-					<span align="center"><a href="review.html" style="text-decoration:none;">Reviews</span></a><br><br>
-
-					<a href="https://www.instagram.com/somethinginside_7" style="text-decoration:none;">@somethinginside_7</a><br>
-
-					<a href="https://www.instagram.com/rachatop/" style="text-decoration:none;">@rachatop</a>
-
-	</div>
-		</div>
-
-	<main>
-	  <div class="slider-container">
-	    <div class="slider">
-	      <img src="1.1.jpg">
-	      <img src="2.1.jpg">
-	      <img src="3.2.jpg">
-	    </div>
-	    <button class="prev-button" type="button" aria-label="Посмотреть предыдущий слайд">&lt;</button>
-	    <button class="next-button" type="button" aria-label="Посмотреть следующий слайд">&gt;</button>
-	  </div>
-  </main>
-  <script src="slider.js"></script>
- <h6 id="Наши единороги">Our Unicorns</h6>
-	<h2>
-	<img src="1.2.png" align="left">
-	Pony Head Unicorn<br> (subspecific "unicorns in parts")<br>
-	<h3>Joy, partying and insane ideas are what will always be with you<br> if you make friends.<br> Also small size and simplicity in food</h3>
-	</h2>
-	<h2><img src="2.2.png" align="left">
-	Warnicorns<br> (subspecific fighting unicorns)
-	<h3>Will murder all your opponents...<br> Well, as a last resource, <br>they won't bother you any more about the little things.</h3>
-	</h2>
-	<h2><img src="3.1.png" align="left">
-	Rainbow Butterfly Unicorn Kitty<br>(subspecific unicorns-butterfly cats)
-	<h3>A cat?<br> A unicorn?<br> A butterfly? <br>To be honest, we don't understand ourselves. <br>But it's cute ;)</h3>
-	</h2>
-	<h2><img src="4.2.png" align="left">
-	Unikitty <br>(subspecific unicorns-cats)
-	<h3>If you don't like to play lego,<br> then you are forbidden to have such a friend.<br> Either love lego or choose something else!</h3>
-	</h2>
-	<h2><img src="5.2.png" align="left">
-	Clear Sky<br> (subspecific Unicorn ponies)
-	<h3>Care and attention is what this species requires.<br> And don't forget about<br> crazy adventures from time to time</h3>
-	</h2>
-	<h2><img src="6.2.png" align="left">
-	Agnes' Unicorn<br> (subspecific Toys-friends)
-	<h3>Attention!<br> This kind can only be won in our tombola!<br> Not for sale!<br> Look for details somewhere on our website</h3>
-	</h2>
-<h6 id="О нас">About Us</h6>
-	<div id=abus><img src="фон лотерея создатели.png" align="left"><br>
-	Fairies, brownies, unicorns - everything exists if you believe in it. We present you a unique chance to find an unusual friend.	To
-	become a happy owner of a unicorn, you only need to fill out a questionnaire and we will contact you. But not everything
-	is so simple, do not forget that you do not choose the unicorn, but the unicorn chooses you. Before you can take the unicorn
-	home, you need to take a three-month course that will prepare you and the unicorn	for the future. You will learn how to take
-	care of unicorns, what they like to do in their free time, how often it is necessary to arrange a day of laziness and become real
-	friends with your future pet.
-	</div>
-<h6 id="Покупатели">Future Customers</h6>
-	<img src="8.jpg" align="left">
-
-	<img src="9.jpg" align="right">
-	<div id="starco">My name is Star Butterfly, I am 15 years old,<br>
-	and my friend Marco Marco Diaz is also 15 years old.<br>
-	Endless adventures and fight against evils.<br>
-	We are friends and we want to get a pet to fight evil,<br>
-	but also cute and unusual.</div>
-	<div id="agnes">"You saw a for real, like, unicorn?<br> 
-	What did it look like? Did you pet it?<br> 
-	Did it smell like candy? Was it FLUFFY?"</div>
-
-<!--<script>
-if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('./script.js')
-      .then(() => navigator.serviceWorker.ready.then((worker) => {
-        worker.sync.register('syncdata');
-      }))
-      .catch((err) => console.log(err));
-}
-</script>-->
-<div class="btn-up btn-up_hide"></div>
-<script src="button.js"></script>
 </body>
 </html>
