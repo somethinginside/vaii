@@ -2,7 +2,7 @@
 include 'config.php';
 
 if (!isset($_SESSION['user_id']) || $_SESSION['user_role'] !== 'admin') {
-    die('Access denied! Only for administration!');
+    die('Access denied. Only for admins.');
 }
 
 $stmt = $pdo->prepare("
@@ -14,75 +14,101 @@ $stmt = $pdo->prepare("
 $stmt->execute();
 $unicorns = $stmt->fetchAll(PDO::FETCH_ASSOC);
 ?>
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Admin: Unicrons</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin: Unicorns - Unicorns World</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
     <style>
-        body { font-family: Arial, sans-serif; margin: 20px; }
-        .btn { padding: 6px 12px; margin: 2px; text-decoration: none; border-radius: 4px; cursor: pointer; }
-        .btn-primary { background: #007bff; color: white; }
-        .btn-success { background: #28a745; color: white; }
-        .btn-warning { background: #ffc107; color: black; }
-        .btn-danger { background: #dc3545; color: white; }
-        table { width: 100%; border-collapse: collapse; margin-top: 10px; }
-        th, td { border: 1px solid #ddd; padding: 10px; text-align: left; vertical-align: top; }
-        th { background: #f8f9fa; }
-        .edit-row input,
-        .edit-row textarea,
-        .edit-row button {
-            display: block; width: 100%; margin: 2px 0; padding: 4px;
+        .status {
+            font-weight: bold;
+            margin-top: 8px;
         }
-        .status { font-weight: bold; }
-        .success { color: green; }
-        .error { color: red; }
+        .status.success { color: #28a745; }
+        .status.error { color: #dc3545; }
+        .product-img {
+            width: 60px;
+            height: 60px;
+            object-fit: cover;
+            border-radius: 6px;
+            margin-bottom: 5px;
+        }
     </style>
 </head>
 <body>
-    <h2>Admin: Unicorn Managment </h2>
 
-    <a href="add_unicorn.php" class="btn btn-primary"> Add unicorn</a>
-    <a href="dashboard.php" class="btn" style="background: #6c757d; color: white;">Back to account </a>
+    <main class="site-main">
+        <header class="site-header">
+            <a href="index.php" class="nav-btn main">Home</a>
+            <a href="dashboard.php" class="nav-btn auth">Account</a>
+            <a href="logout.php" class="nav-btn auth">Logout</a>
+        </header>
 
-    <table id="unicorns-table">
-        <thead>
-            <tr>
-                <th>ID</th>
-                <th>Name</th>
-                <th>Color</th>
-                <th>Age</th>
-                <th>Description</th>
-                <th>Image</th>
-                <th>Admin</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-            <?php foreach ($unicorns as $u): ?>
-                <tr data-id="<?= $u['id'] ?>" class="data-row">
-                    <td><?= htmlspecialchars($u['id']) ?></td>
-                    <td class="field" data-field="name"><?= htmlspecialchars($u['name']) ?></td>
-                    <td class="field" data-field="color"><?= htmlspecialchars($u['color']) ?></td>
-                    <td class="field" data-field="age"><?= htmlspecialchars($u['age']) ?></td>
-                    <td class="field" data-field="description"><?= htmlspecialchars($u['description']) ?></td>
-                    <td>
-                        <img src="<?= htmlspecialchars($u['image']) ?>" alt="Image" width="50" style="display:block; margin-bottom:5px; border:1px solid #eee;">
-                        <span class="field" data-field="image" style="display:none;"><?= htmlspecialchars($u['image']) ?></span>
-                    </td>
-                    <td><?= htmlspecialchars($u['admin_name'] ?? '—') ?></td>
-                    <td>
-                        <button class="btn btn-warning edit-btn">Edit</button>
-                        <button class="btn btn-success save-btn" style="display:none;">Save</button>
-                        <button class="btn btn-secondary cancel-btn" style="display:none;">Cancel</button>
-                        <button class="btn btn-danger delete-btn">Delete</button>
-                        <div class="status"></div>
-                    </td>
-                </tr>
-            <?php endforeach; ?>
-        </tbody>
-    </table>
+        <div class="container">
+            <h2 style="margin: 30px 0; color: #2e2735; text-align: center;">Unicorns management</h2>
+
+            <div style="text-align: center; margin-bottom: 25px;">
+                <a href="add_unicorn.php" class="btn btn-primary">Add unicorn</a>
+            </div>
+
+            <?php if (empty($unicorns)): ?>
+                <p style="text-align: center; font-size: 1.1rem; color: #2e2735;">Unicorns did not added.</p>
+            <?php else: ?>
+                <div style="overflow-x: auto; background: white; border-radius: 14px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); margin-bottom: 30px;">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Name</th>
+                                <th>Color</th>
+                                <th>Age</th>
+                                <th>Description</th>
+                                <th>Image</th>
+                                <th>Admin</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php foreach ($unicorns as $u): ?>
+                                <tr data-id="<?= $u['id'] ?>" class="data-row">
+                                    <td><?= htmlspecialchars($u['id']) ?></td>
+                                    <td class="field" data-field="name"><?= htmlspecialchars($u['name']) ?></td>
+                                    <td class="field" data-field="color"><?= htmlspecialchars($u['color']) ?></td>
+                                    <td class="field" data-field="age"><?= htmlspecialchars($u['age']) ?></td>
+                                    <td class="field" data-field="description"><?= htmlspecialchars($u['description']) ?></td>
+                                    <td>
+                                        <span class="field" data-field="image" style="display:none;"><?= htmlspecialchars($u['image']) ?></span>
+                                        <img src="<?= htmlspecialchars($u['image']) ?>" alt="Image" width="60" style="display:block; margin-bottom:5px; border:1px solid #eee; border-radius: 6px;">
+                                    </td>
+                                    <td><?= htmlspecialchars($u['admin_name'] ?? '—') ?></td>
+                                    <td>
+                                        <button class="btn btn-warning btn-sm edit-btn">Edit</button>
+                                        <button class="btn btn-success btn-sm save-btn" style="display:none;">Save</button>
+                                        <button class="btn btn-secondary btn-sm cancel-btn" style="display:none;">Cancel</button>
+                                        <button class="btn btn-danger btn-sm delete-btn">Delete</button>
+                                        <div class="status"></div>
+                                    </td>
+                                </tr>
+                            <?php endforeach; ?>
+                        </tbody>
+                    </table>
+                </div>
+            <?php endif; ?>
+        </div>
+    </main>
+
+    <footer class="site-footer">
+        <div>
+            <p>&copy; <?= date('Y') ?> Unicorns World. All rights reserved.</p>
+            <p style="margin-top: 10px; font-size: 0.85rem;">
+                We care about your privacy. 
+                <a href="privacy.php">Privacy Policy</a>
+            </p>
+        </div>
+    </footer>
 
     <script>
     document.addEventListener('DOMContentLoaded', function() {
@@ -92,43 +118,36 @@ $unicorns = $stmt->fetchAll(PDO::FETCH_ASSOC);
             const row = button.closest('tr');
             if (!row) return;
 
-            // Скрыть статус
             const statusDiv = row.querySelector('.status');
             if (statusDiv) statusDiv.textContent = '';
 
-            // Найти все поля для редактирования
-            const nameField = row.querySelector('[data-field="name"]');
-            const colorField = row.querySelector('[data-field="color"]');
-            const ageField = row.querySelector('[data-field="age"]');
-            const descField = row.querySelector('[data-field="description"]');
-            const imageField = row.querySelector('[data-field="image"]');
+            const nameField = row.querySelector('.field[data-field="name"]');
+            const colorField = row.querySelector('.field[data-field="color"]');
+            const ageField = row.querySelector('.field[data-field="age"]');
+            const descField = row.querySelector('.field[data-field="description"]');
+            const imageField = row.querySelector('.field[data-field="image"]');
 
-            // Убедимся, что поля найдены
             if (!nameField || !colorField || !ageField || !descField || !imageField) {
-                console.error('Not all fields found for edit');
+                console.error('Not all fields was found for editing');
                 return;
             }
 
-            // Показать форму редактирования
             const name = nameField.textContent.trim();
             const color = colorField.textContent.trim();
             const age = ageField.textContent.trim();
             const desc = descField.textContent.trim();
             const imageUrl = imageField.textContent.trim();
 
-            // Заменяем содержимое ячеек
             nameField.innerHTML = `<input type="text" value="${name}" style="width:100%">`;
             colorField.innerHTML = `<input type="text" value="${color}" style="width:100%">`;
             ageField.innerHTML = `<input type="number" value="${age}" min="0" style="width:100%">`;
             descField.innerHTML = `<textarea rows="2" style="width:100%">${desc}</textarea>`;
 
-            // Для изображения — превью + поле ввода
             imageField.closest('td').innerHTML = `
-                <img src="${imageUrl}" alt="Preview" width="50" style="display:block; margin-bottom:5px; border:1px solid #ccc;">
+                <img src="${imageUrl}" alt="Preview" width="60" style="display:block; margin-bottom:5px; border:1px solid #ccc; border-radius: 6px;">
                 <input type="text" value="${imageUrl}" placeholder="URL image" style="width:100%;">
             `;
 
-            // Кнопки
             button.style.display = 'none';
             const saveBtn = row.querySelector('.save-btn');
             const cancelBtn = row.querySelector('.cancel-btn');
@@ -136,7 +155,6 @@ $unicorns = $stmt->fetchAll(PDO::FETCH_ASSOC);
             if (cancelBtn) cancelBtn.style.display = 'inline-block';
         }
 
-        // Назначаем обработчики для всех кнопок "Edit"
         document.querySelectorAll('.edit-btn').forEach(btn => {
             btn.addEventListener('click', function(e) {
                 e.preventDefault();
@@ -144,7 +162,6 @@ $unicorns = $stmt->fetchAll(PDO::FETCH_ASSOC);
             });
         });
 
-        // === ОТМЕНА ===
         document.querySelectorAll('.cancel-btn').forEach(btn => {
             btn.addEventListener('click', () => location.reload());
         });
@@ -156,7 +173,6 @@ $unicorns = $stmt->fetchAll(PDO::FETCH_ASSOC);
                 const id = row.dataset.id;
                 const statusDiv = row.querySelector('.status');
 
-        // Собираем данные из input/textarea в ячейках
                 const name = row.querySelector('[data-field="name"] input')?.value || '';
                 const color = row.querySelector('[data-field="color"] input')?.value || '';
                 const age = row.querySelector('[data-field="age"] input')?.value || '';
@@ -181,19 +197,19 @@ $unicorns = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
                     if (data.success) {
                         if (statusDiv) {
-                            statusDiv.textContent = 'Save';
+                            statusDiv.textContent = 'Saved';
                             statusDiv.className = 'status success';
                         }
                         setTimeout(() => location.reload(), 1200);
                     } else {
                         if (statusDiv) {
-                            statusDiv.textContent =  (data.error || 'Error');
+                            statusDiv.textContent = (data.error || 'Error');
                             statusDiv.className = 'status error';
                         }
                     }
                 } catch (err) {
                     if (statusDiv) {
-                        statusDiv.textContent = 'NetworkError';
+                        statusDiv.textContent = 'Network error';
                         statusDiv.className = 'status error';
                     }
                 }
@@ -207,7 +223,7 @@ $unicorns = $stmt->fetchAll(PDO::FETCH_ASSOC);
                 const id = row.dataset.id;
                 const name = row.querySelector('[data-field="name"]')?.textContent || '???';
 
-                if (!confirm(`Delete "${name}"?`)) return;
+                if (!confirm(`Delete unicorn "${name}"?`)) return;
 
                 const statusDiv = row.querySelector('.status');
                 if (statusDiv) statusDiv.textContent = 'Deleting...';
@@ -228,17 +244,18 @@ $unicorns = $stmt->fetchAll(PDO::FETCH_ASSOC);
                         setTimeout(() => row.remove(), 1000);
                     } else {
                         if (statusDiv) {
-                            statusDiv.textContent =  (data.error || 'Error');
+                            statusDiv.textContent = (data.error || 'Error');
                             statusDiv.className = 'status error';
                         }
                     }
                 } catch (err) {
-                    if (statusDiv) statusDiv.textContent = 'Network Error';
+                    if (statusDiv) statusDiv.textContent = 'Network error';
                 }
             });
         });
 
     });
     </script>
+
 </body>
 </html>

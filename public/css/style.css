@@ -23,7 +23,7 @@ body {
 }
 
 body {
-    font-family: 'Poppins', sans-serif;
+    font-family: 'Poppins';
     background-color: #e2cbf6;
     color: #2e2735;
     line-height: 1.6;
@@ -168,7 +168,7 @@ body {
     border: 1px solid #ccc;
     border-radius: 6px;
     font-size: 16px;
-    font-family: 'Poppins', sans-serif;
+    font-family: 'Poppins';
 }
 
 /* Таблицы */
@@ -279,5 +279,80 @@ th {
 
     .hero-buttons .btn {
         width: auto;
+    }
+}
+/* Герой */
+.hero {
+    position: relative;
+    padding: 80px 5% 100px;
+    text-align: center;
+    color: #2e2735;
+    overflow: hidden;
+}
+
+/* Обёртка сцены */
+.scene-container {
+    position: relative;
+    margin: 10px auto 10px;
+    width: 100%;
+    max-width: 800px;
+    height: 525px; /* высота сцены */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 2;
+}
+
+/* Единорог */
+.unicorn-gif {
+    position: absolute;
+    bottom: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 800px;
+    height: auto;
+    z-index: 3;
+}
+
+@keyframes float {
+    0%, 100% {
+        transform: translateX(-50%) translateY(0);
+    }
+
+    50% {
+        transform: translateX(-50%) translateY(-5px);
+    }
+}
+
+/* Текст поверх */
+.welcome-text {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: #2e2735;
+    z-index: 4;
+    white-space: nowrap;
+}
+
+/* Адаптив */
+@media (max-width: 768px) {
+    .hero {
+        padding: 60px 5% 80px;
+    }
+
+    .scene-container {
+        height: 200px;
+    }
+
+    .unicorn-gif {
+        width: 90px;
+        bottom: 5px;
+    }
+
+    .welcome-text {
+        font-size: 1.2rem;
     }
 }

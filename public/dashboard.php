@@ -28,10 +28,16 @@ if ($user['role'] !== 'admin') {
     <main class="site-main">
         <header class="site-header">
             <a href="index.php" class="nav-btn main">Home</a>
-            <a href="products.php" class="nav-btn main">Shop</a>
-            <a href="cart.php" class="nav-btn auth">Cart</a>
+            
+            <?php if ($_SESSION['user_role'] !== 'admin'): ?>
+                <a href="products.php" class="nav-btn main">Shop</a>
+                <a href="unicorns.php" class="nav-btn main">Unicorns</a>
+                <a href="cart.php" class="nav-btn auth">Cart</a>
+            <?php endif; ?>
+            
             <a href="dashboard.php" class="nav-btn auth">Account</a>
             <a href="logout.php" class="nav-btn auth">Logout</a>
+
         </header>
 
         <div class="container">
@@ -52,7 +58,6 @@ if ($user['role'] !== 'admin') {
                     <table>
                         <thead>
                             <tr>
-                                <th>¹</th>
                                 <th>Date</th>
                                 <th>Sum</th>
                                 <th>Status</th>
@@ -61,7 +66,6 @@ if ($user['role'] !== 'admin') {
                         <tbody>
                             <?php foreach ($orders as $order): ?>
                                 <tr>
-                                    <td><?= $order['id'] ?></td>
                                     <td><?= $order['date'] ?></td>
                                     <td><?= number_format($order['total_price'], 2, ',', ' ') ?> eur.</td>
                                     <td>
@@ -69,7 +73,8 @@ if ($user['role'] !== 'admin') {
                                         $statusLabels = [
                                             'created' => 'Created',
                                             'shipped' => 'Shipped',
-                                            'can celled' => 'Can celled'
+                                            'ready to ñollection' => 'Ready to collection',
+                                            'done' => 'Done'
                                         ];
                                         echo $statusLabels[$order['status']] ?? $order['status'];
                                         ?>
@@ -87,7 +92,7 @@ if ($user['role'] !== 'admin') {
                     <h3 style="color: #2e2735;">Admins functions</h3>
                     <a href="admin_unicorns.php" class="btn btn-secondary">unicorns management</a>
                     <a href="admin_products.php" class="btn btn-secondary">product management</a>
-                    <a href="admin_order.php" class="btn btn-secondary">check orders</a>
+                    <a href="admin_orders.php" class="btn btn-secondary">check orders</a>
                 </div>
             <?php endif; ?>
         </div>

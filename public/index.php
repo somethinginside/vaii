@@ -14,20 +14,16 @@
         <!-- Шапка -->
         <header class="site-header">
             <a href="index.php" class="nav-btn main">Home</a>
-            <a href="products.php" class="nav-btn main">Shop</a>
-            <a href="#about" class="nav-btn main">About</a>
-            <a href="#contact" class="nav-btn main">Contact</a>
-        
+    
+            <?php if (!isset($_SESSION['user_id']) || $_SESSION['user_role'] !== 'admin'): ?>
+                <a href="products.php" class="nav-btn main">Shop</a>
+                <a href="unicorns.php" class="nav-btn main">Unicorns</a>
+            <?php endif; ?>
+    
             <?php if (isset($_SESSION['user_id'])): ?>
-                <?php
-                $cartCount = 0;
-                if (!empty($_SESSION['cart']['product'])) {
-                    $cartCount = array_sum($_SESSION['cart']['product']);
-                }
-                ?>
-                <a href="cart.php" class="nav-btn auth">
-                    Cart<?php if ($cartCount > 0): ?> (<?= $cartCount ?>)<?php endif; ?>
-                </a>
+                <?php if ($_SESSION['user_role'] !== 'admin'): ?>
+                    <a href="cart.php" class="nav-btn auth">Cart</a>
+                <?php endif; ?>
                 <a href="dashboard.php" class="nav-btn auth">Account</a>
                 <a href="logout.php" class="nav-btn auth">Logout</a>
             <?php else: ?>
@@ -36,19 +32,17 @@
             <?php endif; ?>
         </header>
 
-        <!-- Контент -->
-        <div class="container">
-            <div class="hero" style="text-align: center; padding: 60px 0;">
-                <h1 style="font-size: 2.8rem; margin-bottom: 20px;">Discover Magical Unicorns</h1>
-                <p style="font-size: 1.2rem; margin-bottom: 30px; opacity: 0.9;">
-                    Explore our enchanted collection of accessories, gifts, and wonders for your mythical friends.
-                </p>
-                <div class="hero-buttons">
-                    <a href="products.php" class="btn btn-primary">Shop Now</a>
-                    <a href="#about" class="btn btn-secondary">Learn More</a>
-                </div>
+        <!-- Герой -->
+        <section class="hero">
+            <!-- Контейнер для единорога и текста -->
+            <div class="scene-container">
+                <!-- Анимация: бегущий единорог -->
+                <img src="images/unicorn_start.gif" alt="Running unicorn" class="unicorn-gif">
+
+                <!-- Текст поверх -->
+                <div class="welcome-text">Welcome to the Magical World of Unicorns!</div>
             </div>
-        </div>
+        </section>
     </main>
 
     <!-- Футер -->

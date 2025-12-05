@@ -13,15 +13,6 @@
         <!-- иряър -->
         <header class="site-header">
             <a href="index.php" class="nav-btn main">Home</a>
-            <a href="products.php" class="nav-btn main">Shop</a>
-            <a href="privacy.php" class="nav-btn auth">Privacy Policy</a>
-            <?php if (isset($_SESSION['user_id'])): ?>
-                <a href="dashboard.php" class="nav-btn auth">Account</a>
-                <a href="logout.php" class="nav-btn auth">Logout</a>
-            <?php else: ?>
-                <a href="login.php" class="nav-btn auth">Login</a>
-                <a href="register.php" class="nav-btn auth">Register</a>
-            <?php endif; ?>
         </header>
 
         <div class="container">

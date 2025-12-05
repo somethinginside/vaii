@@ -20,8 +20,6 @@ $products = $stmt->fetchAll(PDO::FETCH_ASSOC);
     <main class="site-main">
         <header class="site-header">
             <a href="index.php" class="nav-btn main">Home</a>
-            <a href="admin_unicorns.php" class="nav-btn main">Unicorns</a>
-            <a href="admin_products.php" class="nav-btn main">Products</a>
             <a href="dashboard.php" class="nav-btn auth">Account</a>
             <a href="logout.php" class="nav-btn auth">Logout</a>
         </header>

@@ -106,9 +106,16 @@ $products = $stmt->fetchAll(PDO::FETCH_ASSOC);
     <main class="site-main">
         <header class="site-header">
             <a href="index.php" class="nav-btn main">Home</a>
-            <a href="products.php" class="nav-btn main">Shop</a>
+    
+            <?php if (!isset($_SESSION['user_id']) || $_SESSION['user_role'] !== 'admin'): ?>
+                <a href="products.php" class="nav-btn main">Shop</a>
+                <a href="unicorns.php" class="nav-btn main">Unicorns</a>
+            <?php endif; ?>
+    
             <?php if (isset($_SESSION['user_id'])): ?>
-                <a href="cart.php" class="nav-btn auth">Cart</a>
+                <?php if ($_SESSION['user_role'] !== 'admin'): ?>
+                    <a href="cart.php" class="nav-btn auth">Cart</a>
+                <?php endif; ?>
                 <a href="dashboard.php" class="nav-btn auth">Account</a>
                 <a href="logout.php" class="nav-btn auth">Logout</a>
             <?php else: ?>

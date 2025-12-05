@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 include 'config.php';
 
 // Инициализация корзины
@@ -19,19 +19,21 @@ if (isset($_GET['action'])) {
             $stmt = $pdo->prepare("SELECT id, stock_quantity FROM `Product` WHERE id = ? AND stock_quantity > 0");
             $stmt->execute([$id]);
             if ($product = $stmt->fetch()) {
-                if (!isset($_SESSION['cart']['product'][$id])) {
-                    $_SESSION['cart']['product'][$id] = 1;
-                } else {
-                    if ($_SESSION['cart']['product'][$id] < $product['stock_quantity']) {
-                        $_SESSION['cart']['product'][$id]++;
-                    }
-                }
-                header('Location: cart.php?message=added');
+                $currentQty = $_SESSION['cart']['product'][$id] ?? 0;
+                $newQty = $currentQty + 1;
+                if ($newQty > $product['stock_quantity']) {
+                // Можно показать ошибку или просто не добавлять
+                header('Location: products.php?error=stock_limit');
                 exit;
             }
+            
+            $_SESSION['cart']['product'][$id] = $newQty;
+            header('Location: cart.php?message=added');
+            exit;
         }
-        header('Location: products.php?error=out_of_stock');
-        exit;
+    }
+    header('Location: products.php?error=out_of_stock');
+    exit;
 
     } elseif ($action === 'remove') {
         $id = (int)($_GET['id'] ?? 0);
@@ -43,20 +45,30 @@ if (isset($_GET['action'])) {
 
     } elseif ($action === 'update') {
         if (isset($_POST['quantities']) && is_array($_POST['quantities'])) {
-            foreach ($_POST['quantities'] as $productId => $qty) {
-                $productId = (int)$productId;
-                $qty = (int)$qty;
-                if ($productId > 0) {
-                    if ($qty <= 0) {
-                        unset($_SESSION['cart']['product'][$productId]);
-                    } else {
-                        $_SESSION['cart']['product'][$productId] = $qty;
-                    }
+        foreach ($_POST['quantities'] as $productId => $qty) {
+            $productId = (int)$productId;
+            $qty = (int)$qty;
+            
+            if ($productId > 0 && $qty > 0) {
+                // Получаем остаток для этого товара
+                $stmt = $pdo->prepare("SELECT stock_quantity FROM Product WHERE id = ?");
+                $stmt->execute([$productId]);
+                $stock = (int)($stmt->fetchColumn() ?? 0);
+                
+                if ($stock > 0) {
+                    // Ограничиваем количеством на складе
+                    $_SESSION['cart']['product'][$productId] = min($qty, $stock);
+                } else {
+                    // Если товара больше нет — удаляем из корзины
+                    unset($_SESSION['cart']['product'][$productId]);
                 }
+            } else {
+                unset($_SESSION['cart']['product'][$productId]);
             }
         }
-        header('Location: cart.php');
-        exit;
+    }
+    header('Location: cart.php');
+    exit;
 
     } elseif ($action === 'checkout') {
         if (empty($_SESSION['cart']['product'])) {
@@ -187,14 +199,9 @@ if (!empty($_SESSION['cart']['product'])) {
         <header class="site-header">
             <a href="index.php" class="nav-btn main">Home</a>
             <a href="products.php" class="nav-btn main">Shop</a>
-            <?php if (isset($_SESSION['user_id'])): ?>
-                <a href="cart.php" class="nav-btn auth">Cart</a>
-                <a href="dashboard.php" class="nav-btn auth">Account</a>
-                <a href="logout.php" class="nav-btn auth">Logout</a>
-            <?php else: ?>
-                <a href="login.php" class="nav-btn auth">Login</a>
-                <a href="register.php" class="nav-btn auth">Register</a>
-            <?php endif; ?>
+            <a href="unicorns.php" class="nav-btn main">Unicorns</a>
+            <a href="dashboard.php" class="nav-btn auth">Account</a>
+            <a href="logout.php" class="nav-btn auth">Logout</a>
         </header>
 
         <div class="container">
@@ -220,6 +227,8 @@ if (!empty($_SESSION['cart']['product'])) {
                         The product is out of stock.
                     <?php elseif ($_GET['error'] === 'stock_changed'): ?>
                         Some items have changed their balances. Check the shopping cart.
+                    <?php elseif ($_GET['error'] === 'stock_limit'): ?>
+                        You cannot add more than is available.
                     <?php endif; ?>
                 </div>
             <?php endif; ?>
