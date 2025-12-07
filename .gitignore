@@ -19,6 +19,7 @@ db.php
 
 # Database dumps
 *.sql
+!schema.sql
 dump.sql
 
 # Cache, temporary files
