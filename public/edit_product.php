@@ -1,114 +1,49 @@
 <?php
+$pageTitle = 'Edit Product — Unicorns World';
+$isAdminPage = true;
 include 'config.php';
+
 if (!isset($_SESSION['user_id']) || $_SESSION['user_role'] !== 'admin') {
-    die('Accsess denied');
-}
-
-if (!isset($_GET['id']) || !is_numeric($_GET['id'])) {
-    die('Incorrect Product ID');
-}
-
-$productId = (int)$_GET['id'];
-
-$stmt = $pdo->prepare("SELECT * FROM `Product` WHERE id = ?");
-$stmt->execute([$productId]);
-$product = $stmt->fetch(PDO::FETCH_ASSOC);
-
-if (!$product) {
-    die('Product not found');
+    die('Access denied. Admin only.');
 }
 
 $error = '';
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $name = trim($_POST['name']);
-    $category = trim($_POST['category']);
-    $price = (float)($_POST['price'] ?? 0);
-    $description = trim($_POST['description']);
-    $image = trim($_POST['image']);
-    $stock = (int)($_POST['stock_quantity'] ?? 0);
+$success = '';
+$product = [];
 
-    if (empty($name) || empty($category) || $price <= 0 || empty($image) || $stock < 0) {
-        $error = 'All fiels are requied and must be correct';
+if (isset($_GET['id'])) {
+    $id = (int)$_GET['id'];
+    $stmt = $pdo->prepare("SELECT * FROM Product WHERE id = ?");
+    $stmt->execute([$id]);
+    $product = $stmt->fetch(PDO::FETCH_ASSOC);
+
+    if (!$product) {
+        die('Product not found.');
+    }
+}
+
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    $id = (int)($_POST['id'] ?? 0);
+    $name = trim($_POST['name']);
+    $description = trim($_POST['description']);
+    $price = (float)($_POST['price'] ?? 0);
+    $stock = (int)($_POST['stock_quantity'] ?? 0);
+    $image = trim($_POST['image']);
+
+    if (empty($name) || $price < 0 || $stock < 0 || empty($image)) {
+        $error = 'All fields required.';
     } else {
         try {
-            $stmt = $pdo->prepare("
-                UPDATE `Product` 
-                SET name = ?, category = ?, price = ?, description = ?, image = ?, stock_quantity = ?
-                WHERE id = ?
-            ");
-            $stmt->execute([$name, $category, $price, $description, $image, $stock, $productId]);
-            header('Location: admin_products.php?message=updated');
-            exit;
+            $stmt = $pdo->prepare("UPDATE Product SET name = ?, description = ?, price = ?, stock_quantity = ?, image = ? WHERE id = ?");
+            $stmt->execute([$name, $description, $price, $stock, $image, $id]);
+            $success = 'Product updated successfully!';
         } catch (PDOException $e) {
-            $error = 'Error while adding product';
+            $error = 'Error updating product: ' . $e->getMessage();
         }
     }
 }
+
+include 'templates/admin_header.html';
+include 'templates/product_edit_form.html';
+include 'templates/footer.html';
 ?>
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Edit product</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="css/style.css">
-</head>
-<body>
-
-    <main class="site-main">
-        <header class="site-header">
-            <a href="index.php" class="nav-btn main">Home</a>
-            <a href="admin_products.php" class="nav-btn main">Bcak to products</a>
-            <a href="dashboard.php" class="nav-btn auth">Account</a>
-            <a href="logout.php" class="nav-btn auth">Logout</a>
-        </header>
-
-        <div class="container">
-            <h2 style="margin: 30px 0; color: #2e2735;">Edit product "<?= htmlspecialchars($product['name']) ?>"</h2>
-
-            <?php if ($error): ?>
-                <div class="message error"><?= htmlspecialchars($error) ?></div>
-            <?php endif; ?>
-
-            <form method="POST" style="max-width: 600px; margin: 0 auto;">
-                <div class="form-group">
-                    <label>Name</label>
-                    <input type="text" name="name" class="form-control" value="<?= htmlspecialchars($product['name']) ?>" required>
-                </div>
-                <div class="form-group">
-                    <label>Category</label>
-                    <input type="text" name="category" class="form-control" value="<?= htmlspecialchars($product['category']) ?>" required>
-                </div>
-                <div class="form-group">
-                    <label>Price (eur.)</label>
-                    <input type="number" name="price" step="0.01" min="0.01" class="form-control" value="<?= $product['price'] ?>" required>
-                </div>
-                <div class="form-group">
-                    <label>Description</label>
-                    <textarea name="description" class="form-control" rows="4" required><?= htmlspecialchars($product['description']) ?></textarea>
-                </div>
-                <div class="form-group">
-                    <label>URL image</label>
-                    <input type="text" name="image" class="form-control" value="<?= htmlspecialchars($product['image']) ?>" required>
-                </div>
-                <div class="form-group">
-                    <label>Remaining stock</label>
-                    <input type="number" name="stock_quantity" min="0" class="form-control" value="<?= (int)$product['stock_quantity'] ?>" required>
-                </div>
-                <button type="submit" class="btn btn-primary" style="width: 100%;">Save changes</button>
-            </form>
-        </div>
-    </main>
-
-    <footer class="site-footer">
-        <div>
-            <p>&copy; <?= date('Y') ?> Unicorns World. All rights reserved.</p>
-            <p style="margin-top: 10px; font-size: 0.85rem;">
-                We care about your privacy. 
-                <a href="privacy.php">Privacy Policy</a>
-            </p>
-        </div>
-    </footer>
-
-</body>
-</html>

@@ -14,24 +14,28 @@ if ($orderId <= 0) {
     exit;
 }
 
-// Получаем товары из OrderItem
-$stmt = $pdo->prepare("
-    SELECT oi.*, p.name 
-    FROM OrderItem oi
-    JOIN Product p ON oi.product_id = p.id
-    WHERE oi.order_id = ?
-");
-$stmt->execute([$orderId]);
-$items = $stmt->fetchAll(PDO::FETCH_ASSOC);
+try {
+    $stmt = $pdo->prepare("
+        SELECT oi.*, p.name, p.price
+        FROM OrderItem oi
+        JOIN Product p ON oi.product_id = p.id
+        WHERE oi.order_id = ?
+    ");
+    $stmt->execute([$orderId]);
+    $items = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-$result = [];
-foreach ($items as $item) {
-    $result[] = [
-        'name' => htmlspecialchars($item['name']),
-        'quantity' => $item['quantity'],
-        'subtotal' => number_format($item['subtotal'], 2, ',', ' ')
-    ];
+    $result = [];
+    foreach ($items as $item) {
+        $result[] = [
+            'name' => htmlspecialchars($item['name']),
+            'quantity' => $item['quantity'],
+            'price_per_unit' => number_format($item['price'], 2, ',', ' '),
+            'subtotal' => number_format($item['subtotal'], 2, ',', ' ')
+        ];
+    }
+
+    echo json_encode(['items' => $result]);
+} catch (PDOException $e) {
+    echo json_encode(['error' => 'Database error']);
 }
-
-echo json_encode(['items' => $result]);
 ?>

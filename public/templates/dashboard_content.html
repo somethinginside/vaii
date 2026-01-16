@@ -1,0 +1,20 @@
+        <div class="container">
+            <h1>Welcome, <?= htmlspecialchars($user['name']) ?>!</h1>
+
+            <?php if ($user['role'] === 'admin'): ?>
+            <div style="margin-top: 30px;">
+                <h3>Administrative Functions</h3>
+                <a href="admin_unicorns.php" class="btn btn-secondary">Manage Unicorns</a>
+                <a href="admin_products.php" class="btn btn-secondary">Manage Products</a>
+                <a href="admin_orders.php" class="btn btn-secondary">Check Orders</a>
+            </div>
+            <?php else: ?>
+            <div style="margin-top: 30px">
+                <h3>Your Account</h3>
+                <a href="user_orders.php" class="btn btn-secondary">My Orders</a>
+                <a href="edit_profile.php" class="btn btn-secondary">Edit Profile</a>
+                <a href="cart.php" class="btn btn-primary">View Cart</a>
+            </div>
+
+            <?php endif; ?>
+        </div>

@@ -1,19 +1,9 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Privacy policy — Unicorns World</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="css/style.css">
-</head>
-<body>
+<?php
+$pageTitle = 'Privacy Polcy - Unicorns World';
+include 'config.php';
+?>
 
-    <main class="site-main">
-        <!-- Øàïêà -->
-        <header class="site-header">
-            <a href="index.php" class="nav-btn main">Home</a>
-        </header>
+<?php include 'templates/header.html'; ?>
 
         <div class="container">
             <h1 style="margin: 30px 0; color: #2e2735; text-align: center;">Privacy policy</h1>
@@ -69,17 +59,8 @@
                 <a href="index.php" class="btn btn-secondary">Bcak to main page</a>
             </div>
         </div>
-    </main>
 
-    <footer class="site-footer">
-        <div>
-            <p>&copy; <?= date('Y') ?> Unicorns World. All rights reserved.</p>
-            <p style="margin-top: 10px; font-size: 0.85rem;">
-                We care about your privacy. 
-                <a href="privacy.php">Privacy Policy</a>
-            </p>
-        </div>
-    </footer>
-
-</body>
-</html>
+<?php
+$jsFile = 'js/main.js';
+include 'templates/footer.html';
+?>

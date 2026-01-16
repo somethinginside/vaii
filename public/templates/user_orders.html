@@ -1,0 +1,45 @@
+        <div class="container">
+            <h2>My Orders</h2>
+
+            <?php if (empty($orders)): ?>
+            <p>You haven't placed any orders yet.</p>
+            <?php else: ?>
+            <div style="overflow-x: auto; background: white; border-radius: 14px; box-shadow: 0 2px 8px rgba(0,0,0,0.08);">
+                <table class="admin-table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Date</th>
+                            <th>Total</th>
+                            <th>Status</th>
+                            <th>Items</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php foreach ($orders as $order): ?>
+                        <tr>
+                            <td>#<?= $order['id'] ?></td>
+                            <td><?= $order['date'] ?></td>
+                            <td><?= number_format($order['total_price'], 2, ',', ' ') ?> eur.</td>
+                            <td>
+                                <span class="status-<?= $order['status'] ?>">
+                                    <?= ucfirst($order['status']) ?>
+                                </span>
+                            </td>
+                            <td><?= $order['items_count'] ?> item(s)</td>
+                        </tr>
+                        <?php endforeach; ?>
+                    </tbody>
+                </table>
+            </div>
+            <?php endif; ?>
+        </div>
+
+        <!-- Modal -->
+        <div id="order-modal" class="modal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:1000; justify-content:center; align-items:center;">
+            <div class="modal-content" style="background:white; padding:25px; border-radius:14px; max-width:600px; width:90%; max-height:80vh; overflow:auto;">
+                <h3>Order Details <span id="order-id-placeholder"></span></h3>
+                <div id="order-details-content"></div>
+                <button id="close-modal" class="btn btn-secondary" style="margin-top:20px;">Close</button>
+            </div>
+        </div>

@@ -1,0 +1,32 @@
+        <div class="container">
+            <h1>All Unicorns</h1>
+
+            <?php if (empty($unicorns)): ?>
+            <p>No unicorns added yet.</p>
+            <?php else: ?>
+            <div class="unicorns-grid">
+                <?php foreach ($unicorns as $u): ?>
+                <div class="unicorn-card">
+                    <img src="<?= htmlspecialchars($u['image']) ?>" alt="<?= htmlspecialchars($u['name']) ?>" class="unicorn-img">
+                    <div class="unicorn-info">
+                        <h3><?= htmlspecialchars($u['name']) ?></h3>
+                        <div class="detail">
+                            <span class="label">Color:</span>
+                            <span class="value"><?= htmlspecialchars($u['color']) ?></span>
+                        </div>
+                        <div class="detail">
+                            <span class="label">Age:</span>
+                            <span class="value"><?= (int)$u['age'] ?> years</span>
+                        </div>
+                        <p style="margin: 12px 0; font-size: 0.95rem; color: #2e2735;">
+                            <?= htmlspecialchars($u['description']) ?>
+                        </p>
+                        <?php if (!empty($u['admin_name'])): ?>
+                        <div class="admin-tag">Added by: <?= htmlspecialchars($u['admin_name']) ?></div>
+                        <?php endif; ?>
+                    </div>
+                </div>
+                <?php endforeach; ?>
+            </div>
+            <?php endif; ?>
+        </div>

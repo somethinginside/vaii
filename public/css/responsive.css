@@ -1,0 +1,50 @@
+@media (max-width: 768px) {
+    .site-header {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .nav-btn {
+        margin: 3px 5px;
+    }
+
+    .products-grid {
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    }
+
+    .hero {
+        padding: 60px 5% 80px;
+    }
+
+    .grass-background {
+        height: 150px;
+    }
+
+    .scene-container {
+        height: 200px;
+    }
+
+    .unicorn-gif {
+        width: 90px;
+        bottom: 5px;
+    }
+
+    .welcome-text {
+        font-size: 1.2rem;
+    }
+
+    .hero h1 {
+        font-size: 2.4rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .products-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .btn {
+        padding: 8px 16px;
+        font-size: 0.9rem;
+    }
+}

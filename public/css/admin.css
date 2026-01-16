@@ -1,0 +1,53 @@
+/* Admin-specific styles */
+.admin-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 20px 0;
+}
+
+    .admin-table th, .admin-table td {
+        padding: 14px;
+        text-align: left;
+        border-bottom: 1px solid #eee;
+    }
+
+    .admin-table th {
+        background: #f0e6f4;
+        color: #766288;
+    }
+
+.data-row {
+    transition: background-color 0.2s;
+}
+
+    .data-row:hover {
+        background: #f9f5fb;
+    }
+
+.field input, .field textarea {
+    width: 100%;
+    padding: 6px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.status {
+    font-weight: bold;
+    margin-top: 8px;
+    font-size: 0.9rem;
+}
+
+    .status.success {
+        color: #28a745;
+    }
+
+    .status.error {
+        color: #dc3545;
+    }
+
+/* Admin buttons */
+.admin-actions {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+}

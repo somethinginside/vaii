@@ -15,7 +15,7 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 $orderId = (int)($_POST['order_id'] ?? 0);
 $newStatus = $_POST['status'] ?? '';
 
-$availableStatuses = ['created', 'shipped', 'ready to ñollection', 'done'];
+$availableStatuses = ['created', 'shipped', 'cancelled'];
 
 if ($orderId <= 0 || !in_array($newStatus, $availableStatuses)) {
     header('Location: admin_orders.php?error=invalid');
