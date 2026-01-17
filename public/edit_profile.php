@@ -1,5 +1,5 @@
 <?php
-$pageTitle = 'Edit Profile — Unicorns World';
+$pageTitle = 'Edit Profile';
 include 'config.php';
 
 if (!isset($_SESSION['user_id'])) {
@@ -13,30 +13,64 @@ $error = '';
 $success = '';
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    $name = trim($_POST['name']);
-    $email = trim($_POST['email']);
+    $name = trim($_POST['name'] ?? '');
+    $email = trim($_POST['email'] ?? '');
     $newPassword = $_POST['new_password'] ?? '';
     $confirmPassword = $_POST['confirm_password'] ?? '';
 
-    if (empty($name) || empty($email)) {
-        $error = 'Name and email are required.';
-    } elseif ($newPassword !== '' && $newPassword !== $confirmPassword) {
-        $error = 'New passwords do not match.';
-    } else {
+    // Начальные значения — текущие данные пользователя
+    $newName = $user['name'];
+    $newEmail = $user['email'];
+    $newHashedPassword = null;
+
+    // Проверяем, что хотя бы что-то изменилось
+    $changesMade = false;
+
+    if (!empty($name) && $name !== $user['name']) {
+        $newName = $name;
+        $changesMade = true;
+    }
+
+    if (!empty($email) && $email !== $user['email']) {
+        // Проверяем, не занят ли email
+        $stmt = $pdo->prepare("SELECT id FROM User WHERE email = ? AND id != ?");
+        $stmt->execute([$email, $_SESSION['user_id']]);
+        if ($stmt->fetch()) {
+            $error = 'Email already exists.';
+        } else {
+            $newEmail = $email;
+            $changesMade = true;
+        }
+    }
+
+    if (!empty($newPassword)) {
+        if (empty($confirmPassword)) {
+            $error = 'Please confirm new password';
+        } elseif ($newPassword !== $confirmPassword) {
+            $error = 'New passwords do not match';
+        } else {
+            $newHashedPassword = hashPassword($newPassword);
+            $changesMade = true;
+        }
+
+    }
+
+    if (!$changesMade) {
+        $error = 'No changes made.';
+    } elseif (empty($error)) {
         try {
-            if ($newPassword !== '') {
-                $hashedPassword = hashPassword($newPassword);
+            if ($newHashedPassword) {
                 $stmt = $pdo->prepare("UPDATE User SET name = ?, email = ?, password = ? WHERE id = ?");
-                $stmt->execute([$name, $email, $hashedPassword, $_SESSION['user_id']]);
+                $stmt->execute([$newName, $newEmail, $newHashedPassword, $_SESSION['user_id']]);
             } else {
                 $stmt = $pdo->prepare("UPDATE User SET name = ?, email = ? WHERE id = ?");
-                $stmt->execute([$name, $email, $_SESSION['user_id']]);
+                $stmt->execute([$newName, $newEmail, $_SESSION['user_id']]);
             }
             $success = 'Profile updated successfully!';
             // Обновляем сессию
-            $_SESSION['user_name'] = $name;
+            $_SESSION['user_name'] = $newName;
         } catch (PDOException $e) {
-            $error = 'Email already exists.';
+            $error = 'Database error occurred.';
         }
     }
 }

@@ -1,20 +1,24 @@
 /* Admin-specific styles */
 .admin-table {
     width: 100%;
+    table-layout: auto;
     border-collapse: collapse;
     margin: 20px 0;
 }
 
-    .admin-table th, .admin-table td {
-        padding: 14px;
-        text-align: left;
-        border-bottom: 1px solid #eee;
-    }
+.admin-table th, 
+.admin-table td {
+    white-space: nowrap;
+    padding: 14px;
+    text-align: left;
+    border-bottom: 1px solid #eee;
+}
 
-    .admin-table th {
-        background: #f0e6f4;
-        color: #766288;
-    }
+.admin-table th {
+    background: #f0e6f4;
+    color: #766288;
+    font-weight: 600;
+}
 
 .data-row {
     transition: background-color 0.2s;

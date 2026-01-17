@@ -1,5 +1,5 @@
 <?php
-$pageTitle = 'My Orders — Unicorns World';
+$pageTitle = 'My Orders';
 include 'config.php';
 
 if (!isset($_SESSION['user_id'])) {
@@ -11,9 +11,10 @@ $user_id = $_SESSION['user_id'];
 
 $stmt = $pdo->prepare("
     SELECT o.*, 
-           COUNT(oi.product_id) as items_count
+           GROUP_CONCAT(p.name SEPARATOR ',') as items_names
     FROM `Order` o
     LEFT JOIN `OrderItem` oi ON o.id = oi.order_id
+    LEFT JOIN `Product` p ON oi.product_id = p.id
     WHERE o.user_id = ?
     GROUP BY o.id
     ORDER BY o.date DESC

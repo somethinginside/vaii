@@ -5,7 +5,7 @@
             <p>You haven't placed any orders yet.</p>
             <?php else: ?>
             <div style="overflow-x: auto; background: white; border-radius: 14px; box-shadow: 0 2px 8px rgba(0,0,0,0.08);">
-                <table class="admin-table">
+                <table class="admin-table" style="width: 100%"; max-width: none; table-layout: auto;>
                     <thead>
                         <tr>
                             <th>ID</th>
@@ -26,7 +26,13 @@
                                     <?= ucfirst($order['status']) ?>
                                 </span>
                             </td>
-                            <td><?= $order['items_count'] ?> item(s)</td>
+                            <td>
+                                <?php if ($order['items_names']): ?>
+                                    <?= htmlspecialchars($order['items_names']) ?>
+                                <?php else: ?>
+                                    No items
+                                <?php endif; ?>
+                            </td>
                         </tr>
                         <?php endforeach; ?>
                     </tbody>

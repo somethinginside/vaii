@@ -2,29 +2,29 @@
             <h2>Edit Profile</h2>
 
             <?php if ($error): ?>
-            <div class="message error"><?= htmlspecialchars($error) ?></div>
+                <div class="message error"><?= htmlspecialchars($error) ?></div>
             <?php endif; ?>
 
             <?php if ($success): ?>
-            <div class="message success"><?= htmlspecialchars($success) ?></div>
+                <div class="message success"><?= htmlspecialchars($success) ?></div>
             <?php endif; ?>
 
-            <form method="POST" style="max-width: 600px; margin: 0 auto; background: white; padding: 30px; border-radius: 14px; box-shadow: 0 2px 8px rgba(0,0,0,0.08);">
+            <form method="POST" autocomplete="off" style="max-width: 600px; margin: 0 auto; background: white; padding: 30px; border-radius: 14px; box-shadow: 0 2px 8px rgba(0,0,0,0.08);">
                 <div class="form-group">
-                    <label for="name">Full Name</label>
-                    <input type="text" name="name" id="name" class="form-control" value="<?= htmlspecialchars($user['name']) ?>" required>
+                    <label for="name">Full Name (leave blank to keep current)</label>
+                    <input type="text" name="name" id="profile_name" class="form-control" value="" placeholder="Current: <?= htmlspecialchars($user['name']) ?>" autocomplete="off">
                 </div>
                 <div class="form-group">
-                    <label for="email">Email</label>
-                    <input type="email" name="email" id="email" class="form-control" value="<?= htmlspecialchars($user['email']) ?>" required>
+                    <label for="email">Email (leave blank to keep current)</label>
+                    <input type="email" name="email" id="profile_email" class="form-control" value="" placeholder="Current: <?= htmlspecialchars($user['email']) ?>" autocomplete="off">
                 </div>
                 <div class="form-group">
                     <label for="new_password">New Password (leave blank to keep current)</label>
-                    <input type="password" name="new_password" id="new_password" class="form-control">
+                    <input type="password" name="new_password" id="profile_new_password" class="form-control" placeholder="Enter new password" autocomplete="off">
                 </div>
                 <div class="form-group">
                     <label for="confirm_password">Confirm New Password</label>
-                    <input type="password" name="confirm_password" id="confirm_password" class="form-control">
+                    <input type="password" name="confirm_password" id="profile_confirm_password" class="form-control" placeholder="Repeatnew password" autocomplete="off">
                 </div>
                 <button type="submit" class="btn btn-primary">Update Profile</button>
             </form>

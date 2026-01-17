@@ -20,6 +20,13 @@ body {
     text-align: center;
 }
 
+.unicorn-gif {
+    width: 50%;
+    max-width: 1000px;
+    margin-left: 350px;
+
+}
+
 .site-main {
     flex: 1;
     display: flex;
@@ -27,7 +34,7 @@ body {
 }
 
 .container {
-    max-width: 1200px;
+    width: 100%;
     margin: 0 auto;
     padding: 20px;
     flex: 1;
