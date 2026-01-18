@@ -21,6 +21,7 @@ $products = $stmt->fetchAll(PDO::FETCH_ASSOC);
                             <img src="<?= htmlspecialchars($p['image']) ?>" alt="<?= htmlspecialchars($p['name']) ?>">
                             <div class="product-info">
                                 <h3><?= htmlspecialchars($p['name']) ?></h3>
+                                <p><?=htmlspecialchars($p['category']) ?></p>
                                 <p><?= htmlspecialchars($p['description']) ?></p>
                                 <p><strong><?= number_format($p['price'], 2, ',', ' ') ?> eur.</strong></p>
                                 <a href="cart.php?action=add&id=<?= $p['id'] ?>" class="btn btn-primary">Add to Cart</a>

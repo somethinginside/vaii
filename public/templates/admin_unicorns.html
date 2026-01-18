@@ -1,0 +1,61 @@
+        <div class="container">
+            <h2>Manage Unicorns</h2>
+            <a href="add_unicorn.php" class="btn btn-primary" style="margin-bottom: 20px;">Add unicorn</a>
+
+            <?php if (empty($unicorns)): ?>
+            <p>No unicorns added.</p>
+            <?php else: ?>
+            <div style="overflow-x: auto; background: white; border-radius: 14px; box-shadow: 0 2px 8px rgba(0,0,0,0.08);">
+                <table class="admin-table" style="width: 100%;">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Name</th>
+                            <th>Color</th>
+                            <th>Age</th>
+                            <th>Description</th>
+                            <th>Image</th>
+                            <th>Added By</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php foreach ($unicorns as $u): ?>
+                        <tr data-id="<?= $u['id'] ?>" class="data-row">
+                            <td><?= htmlspecialchars($u['id']) ?></td>
+                            <td class="field" data-field="name">
+                                <span class="text"><?= htmlspecialchars($u['name']) ?></span>
+                                <input type="text" class="edit-input" value="<?= htmlspecialchars($u['name']) ?>" style="display:none; width:100%">
+                            </td>
+                            <td class="field" data-field="color">
+                                <span class="text"><?= htmlspecialchars($u['color']) ?></span>
+                                <input type="text" class="edit-input" value="<?= htmlspecialchars($u['color']) ?>" style="display:none; width:100%">
+                            </td>
+                            <td class="field" data-field="age">
+                                <span class="text"><?= (int)$u['age'] ?></span>
+                                <input type="number" class="edit-input" value="<?= (int)$u['age'] ?>" min="0" style="display:none; width:100%">
+                            </td>
+                            <td class="field" data-field="description">
+                                <span class="text"><?= htmlspecialchars($u['description']) ?></span>
+                                <textarea class="edit-input" rows="2" style="display:none; width:100%"><?= htmlspecialchars($u['description']) ?></textarea>
+                            </td>
+                            <td class="field" data-field="image">
+                                <img src="<?= htmlspecialchars($u['image']) ?>" alt="Image" width="60" style="display:block; margin-bottom:5px; border:1px solid #eee; border-radius: 6px;">
+                                <span class="text" style="display:none;"></span>
+                                <input type="text" class="edit-input" value="<?= htmlspecialchars($u['image']) ?>" placeholder="URL изображения" style="display:none; width:100%">
+                            </td>
+                            <td><?= htmlspecialchars($u['admin_name'] ?? 'System') ?></td>
+                            <td>
+                                <button class="btn btn-warning btn-sm edit-btn">Edit</button>
+                                <button class="btn btn-success btn-sm save-btn" style="display:none;">Save</button>
+                                <button class="btn btn-secondary btn-sm cancel-btn" style="display:none;">Cancel</button>
+                                <button class="btn btn-danger btn-sm delete-btn">Delete</button>
+                                <div class="status"></div>
+                            </td>
+                        </tr>
+                        <?php endforeach; ?>
+                    </tbody>
+                </table>
+            </div>
+            <?php endif; ?>
+        </div>

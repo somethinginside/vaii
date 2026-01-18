@@ -1,261 +1,303 @@
-<?php
-$pageTitle = 'Cart-Unicorns World';
-include 'config.php';
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('Admin JS loaded');
 
-// Админ не может заходить в корзину
-if (isset($_SESSION['user_id']) && $_SESSION['user_role'] === 'admin') {
-    header('Location: dashboard.php');
-    exit;
-}
+    // === INLINE EDITING ===
+    function enableEditing(button) {
+        const row = button.closest('tr');
+        if (!row) return;
 
-// Инициализация корзины
-if (!isset($_SESSION['cart'])) {
-    $_SESSION['cart'] = [];
-}
-if (!isset($_SESSION['cart']['product'])) {
-    $_SESSION['cart']['product'] = [];
-}
+        const statusDiv = row.querySelector('.status');
+        if (statusDiv) statusDiv.textContent = '';
 
-// === ОБРАБОТКА ДЕЙСТВИЙ ===
-if (isset($_GET['action'])) {
-    $action = $_GET['action'];
+        // ✅ Сохраняем оригинальный HTML всех полей
+        const nameField = row.querySelector('.field[data-field="name"]');
+        const colorField = row.querySelector('.field[data-field="color"]');
+        const ageField = row.querySelector('.field[data-field="age"]');
+        const descField = row.querySelector('.field[data-field="description"]');
+        const imageField = row.querySelector('.field[data-field="image"]');
 
-    if ($action === 'add') {
-        $id = (int)($_GET['id'] ?? 0);
-        if ($id > 0) {
-            $stmt = $pdo->prepare("SELECT id, stock_quantity FROM `Product` WHERE id = ? AND stock_quantity > 0");
-            $stmt->execute([$id]);
-            if ($product = $stmt->fetch()) {
-                $currentQty = $_SESSION['cart']['product'][$id] ?? 0;
-                $newQty = $currentQty + 1;
-                
-                if ($newQty > $product['stock_quantity']) {
-                    header('Location: products.php?error=stock_limit');
-                    exit;
-                }
-                
-                $_SESSION['cart']['product'][$id] = $newQty;
-                header('Location: cart.php?message=added');
-                exit;
+        // ✅ Сохраняем оригинальный HTML
+        row.dataset.originalNameHtml = nameField.outerHTML;
+        row.dataset.originalColorHtml = colorField.outerHTML;
+        row.dataset.originalAgeHtml = ageField.outerHTML;
+        row.dataset.originalDescHtml = descField.outerHTML;
+        row.dataset.originalImageHtml = imageField.outerHTML;
+
+        // ✅ Сохраняем оригинальные значения
+        const originalValues = {
+            name: nameField.textContent.trim(),
+            color: colorField.textContent.trim(),
+            age: ageField.textContent.trim(),
+            desc: descField.textContent.trim(),
+            image: imageField.textContent.trim()
+        };
+
+        // ✅ Сохраняем эти значения в data-атрибутах строки
+        row.setAttribute('data-original-name', originalValues.name);
+        row.setAttribute('data-original-color', originalValues.color);
+        row.setAttribute('data-original-age', originalValues.age);
+        row.setAttribute('data-original-desc', originalValues.desc);
+        row.setAttribute('data-original-image', originalValues.image);
+
+        if (!nameField || !colorField || !ageField || !descField || !imageField) {
+            console.error('Fields not found');
+            return;
+        }
+
+        const name = nameField.textContent.trim();
+        const color = colorField.textContent.trim();
+        const age = ageField.textContent.trim();
+        const desc = descField.textContent.trim();
+        const imageUrl = imageField.textContent.trim();
+
+        // ✅ Заменяем поля на input
+        nameField.innerHTML = `<input type="text" value="${name.replace(/"/g, '&quot;')}" style="width:100%">`;
+        colorField.innerHTML = `<input type="text" value="${color.replace(/"/g, '&quot;')}" style="width:100%">`;
+        ageField.innerHTML = `<input type="number" value="${age}" min="0" style="width:100%">`;
+        descField.innerHTML = `<textarea rows="2" style="width:100%">${desc}</textarea>`;
+
+        // ✅ Теперь imageField — это span, а td — его родитель
+        const imageTd = imageField.closest('td');
+        imageTd.innerHTML = `
+            <img src="${imageUrl}" alt="Preview" width="60" style="display:block; margin-bottom:5px; border:1px solid #ccc; border-radius:6px;">
+            <input type="text" value="${imageUrl}" placeholder="URL изображения" style="width:100%;">
+        `;
+
+        // ✅ Скрываем кнопку Edit
+        button.style.display = 'none';
+        const saveBtn = row.querySelector('.save-btn');
+        const cancelBtn = row.querySelector('.cancel-btn');
+        if (saveBtn) saveBtn.style.display = 'inline-block';
+        if (cancelBtn) cancelBtn.style.display = 'inline-block';
+    }
+
+    document.querySelectorAll('.edit-btn').forEach(btn => {
+        btn.addEventListener('click', function(e) {
+            e.preventDefault();
+            console.log('Edit button clicked!');
+            enableEditing(this);
+        });
+    });
+
+    // === CANCEL ===
+    document.querySelectorAll('.cancel-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+            const row = this.closest('tr');
+
+            // ✅ Получаем оригинальные значения из data-атрибутов
+            const originalName = row.getAttribute('data-original-name');
+            const originalColor = row.getAttribute('data-original-color');
+            const originalAge = row.getAttribute('data-original-age');
+            const originalDesc = row.getAttribute('data-original-desc');
+            const originalImage = row.getAttribute('data-original-image');
+
+            if (!originalName || !originalColor || !originalAge || !originalDesc || !originalImage) {
+                console.error('Original values not found');
+                return;
             }
-        }
-        header('Location: products.php?error=out_of_stock');
-        exit;
 
-    } elseif ($action === 'remove') {
-        $id = (int)($_GET['id'] ?? 0);
-        if ($id > 0) {
-            unset($_SESSION['cart']['product'][$id]);
-        }
-        header('Location: cart.php?message=removed');
-        exit;
+            // ✅ Восстанавливаем оригинальный HTML
+            const nameField = row.querySelector('.field[data-field="name"]');
+            const colorField = row.querySelector('.field[data-field="color"]');
+            const ageField = row.querySelector('.field[data-field="age"]');
+            const descField = row.querySelector('.field[data-field="description"]');
+            const imageField = row.querySelector('.field[data-field="image"]');
 
-    } elseif ($action === 'update') {
-        if (isset($_POST['quantities']) && is_array($_POST['quantities'])) {
-            foreach ($_POST['quantities'] as $productId => $qty) {
-                $productId = (int)$productId;
-                $qty = (int)$qty;
-                
-                if ($productId > 0 && $qty > 0) {
-                    $stmt = $pdo->prepare("SELECT stock_quantity FROM `Product` WHERE id = ?");
-                    $stmt->execute([$productId]);
-                    $stock = (int)($stmt->fetchColumn() ?? 0);
-                    
-                    if ($stock > 0) {
-                        $_SESSION['cart']['product'][$productId] = min($qty, $stock);
-                    } else {
-                        unset($_SESSION['cart']['product'][$productId]);
+            if (!nameField || !colorField || !ageField || !descField || !imageField) {
+                console.error('Fields not found');
+                return;
+            }
+
+            nameField.outerHTML = row.dataset.originalNameHtml;
+            colorField.outerHTML = row.dataset.originalColorHtml;
+            ageField.outerHTML = row.dataset.originalAgeHtml;
+            descField.outerHTML = row.dataset.originalDescHtml;
+            imageField.outerHTML = row.dataset.originalImageHtml;
+
+            // ✅ Восстанавливаем изображение (img + span) в TD
+            const imageTd = imageField.closest('td');
+            imageTd.innerHTML = `
+                <img src="${originalImage}" alt="Image" width="60" style="display:block; margin-bottom:5px; border:1px solid #eee; border-radius: 6px;">
+                <span class="field" data-field="image" style="display:none;">${originalImage}</span>
+            `;
+
+            // ✅ Возвращаем кнопки в исходное состояние
+            const editBtn = row.querySelector('.edit-btn');
+            const saveBtn = row.querySelector('.save-btn');
+            const cancelBtn = row.querySelector('.cancel-btn');
+            editBtn.style.display = 'inline-block';
+            saveBtn.style.display = 'none';
+            cancelBtn.style.display = 'none';
+
+            // ✅ Удаляем data-атрибуты
+            row.removeAttribute('data-original-name');
+            row.removeAttribute('data-original-color');
+            row.removeAttribute('data-original-age');
+            row.removeAttribute('data-original-desc');
+            row.removeAttribute('data-original-image');
+            delete row.dataset.originalNameHtml;
+            delete row.dataset.originalColorHtml;
+            delete row.dataset.originalAgeHtml;
+            delete row.dataset.originalDescHtml;
+            delete row.dataset.originalImageHtml;
+        });
+    });
+
+    // === SAVE ===
+    document.querySelectorAll('.save-btn').forEach(btn => {
+        btn.addEventListener('click', async function() {
+            const row = this.closest('tr');
+            const id = row.dataset.id;
+            const statusDiv = row.querySelector('.status');
+
+            // ✅ Получаем оригинальные значения из data-атрибутов
+            const originalName = row.getAttribute('data-original-name');
+            const originalColor = row.getAttribute('data-original-color');
+            const originalAge = row.getAttribute('data-original-age');
+            const originalDesc = row.getAttribute('data-original-desc');
+            const originalImage = row.getAttribute('data-original-image');
+
+            const name = row.querySelector('[data-field="name"] input')?.value || '';
+            const color = row.querySelector('[data-field="color"] input')?.value || '';
+            const age = row.querySelector('[data-field="age"] input')?.value || '';
+            const desc = row.querySelector('[data-field="description"] textarea')?.value || '';
+            const imageUrl = row.querySelector('td img + input')?.value || '';
+
+            if (!name || !color || !age || !desc || !imageUrl) {
+                if (statusDiv) {
+                    statusDiv.textContent = 'All fields required';
+                    statusDiv.className = 'status error';
+                }
+                return;
+            }
+
+            try {
+                const res = await fetch('/update_unicorn.php', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ id, name, color, age, description: desc, image: imageUrl })
+                });
+                const data = await res.json();
+
+                if (data.success) {
+                    if (statusDiv) {
+                        statusDiv.textContent = 'Saved';
+                        statusDiv.className = 'status success';
                     }
+
+                    // ✅ Обновляем текстовые поля
+                    const nameField = row.querySelector('.field[data-field="name"]');
+                    const colorField = row.querySelector('.field[data-field="color"]');
+                    const ageField = row.querySelector('.field[data-field="age"]');
+                    const descField = row.querySelector('.field[data-field="description"]');
+                    const imageField = row.querySelector('.field[data-field="image"]');
+
+                    nameField.textContent = name;
+                    colorField.textContent = color;
+                    ageField.textContent = age;
+                    descField.textContent = desc;
+                    imageField.textContent = imageUrl;
+
+                    // ✅ Восстанавливаем изображение (img + span) в TD
+                    const imageTd = imageField.closest('td');
+                    imageTd.innerHTML = `
+                        <img src="${imageUrl}" alt="Image" width="60" style="display:block; margin-bottom:5px; border:1px solid #eee; border-radius: 6px;">
+                        <span class="field" data-field="image" style="display:none;">${imageUrl}</span>
+                    `;
+
+                    // ✅ Удаляем data-атрибуты
+                    row.removeAttribute('data-original-name');
+                    row.removeAttribute('data-original-color');
+                    row.removeAttribute('data-original-age');
+                    row.removeAttribute('data-original-desc');
+                    row.removeAttribute('data-original-image');
+                    delete row.dataset.originalNameHtml;
+                    delete row.dataset.originalColorHtml;
+                    delete row.dataset.originalAgeHtml;
+                    delete row.dataset.originalDescHtml;
+                    delete row.dataset.originalImageHtml;
+
+                    // ✅ Возвращаем кнопки в исходное состояние
+                    const editBtn = row.querySelector('.edit-btn');
+                    const saveBtn = row.querySelector('.save-btn');
+                    const cancelBtn = row.querySelector('.cancel-btn');
+                    editBtn.style.display = 'inline-block';
+                    saveBtn.style.display = 'none';
+                    cancelBtn.style.display = 'none';
+
                 } else {
-                    unset($_SESSION['cart']['product'][$productId]);
+                    if (statusDiv) {
+                        statusDiv.textContent = 'Error: ' + (data.error || 'Unknown error');
+                        statusDiv.className = 'status error';
+                    }
+                    // ✅ Восстанавливаем кнопки даже при ошибке
+                    const editBtn = row.querySelector('.edit-btn');
+                    const saveBtn = row.querySelector('.save-btn');
+                    const cancelBtn = row.querySelector('.cancel-btn');
+                    editBtn.style.display = 'inline-block';
+                    saveBtn.style.display = 'none';
+                    cancelBtn.style.display = 'none';
                 }
+            } catch (err) {
+                if (statusDiv) {
+                    statusDiv.textContent = 'Network error';
+                    statusDiv.className = 'status error';
+                }
+
+                // ✅ ВОССТАНАВЛИВАЕМ ВСЁ состояние при Network Error
+                // ✅ Восстанавливаем изображение (старое значение)
+                const imageTd = row.querySelector('.field[data-field="image"]').closest('td');
+                imageTd.innerHTML = `
+                    <img src="${originalImage}" alt="Image" width="60" style="display:block; margin-bottom:5px; border:1px solid #eee; border-radius: 6px;">
+                    <span class="field" data-field="image" style="display:none;">${originalImage}</span>
+                `;
+
+                // ✅ Возвращаем кнопки в исходное состояние
+                const editBtn = row.querySelector('.edit-btn');
+                const saveBtn = row.querySelector('.save-btn');
+                const cancelBtn = row.querySelector('.cancel-btn');
+                editBtn.style.display = 'inline-block';
+                saveBtn.style.display = 'none';
+                cancelBtn.style.display = 'none';
             }
-        }
-        header('Location: cart.php');
-        exit;
+        });
+    });
 
-    } elseif ($action === 'checkout') {
-        if (empty($_SESSION['cart']['product'])) {
-            header('Location: cart.php?error=empty');
-            exit;
-        }
-        if (!isset($_SESSION['user_id'])) {
-            header('Location: login.php');
-            exit;
-        }
+    // === DELETE UNICORN ===
+    document.querySelectorAll('.delete-btn').forEach(btn => {
+        btn.addEventListener('click', async function() {
+            const row = this.closest('tr');
+            const id = row.dataset.id;
+            const name = row.querySelector('[data-field="name"]')?.textContent || '???';
 
-        $productIds = array_keys($_SESSION['cart']['product']);
-        $placeholders = str_repeat('?,', count($productIds) - 1) . '?';
-        $stmt = $pdo->prepare("SELECT id, name, price, stock_quantity FROM `Product` WHERE id IN ($placeholders)");
-        $stmt->execute($productIds);
-        $productData = [];
-        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-            $productData[$row['id']] = $row;
-        }
+            if (!confirm(`Delete unicorn "${name}"?`)) return;
 
-        // Проверяем, что все товары есть в наличии
-        foreach ($_SESSION['cart']['product'] as $id => $qty) {
-            if (!isset($productData[$id]) || $qty > $productData[$id]['stock_quantity']) {
-                header('Location: cart.php?error=stock_changed');
-                exit;
+            const statusDiv = row.querySelector('.status');
+            if (statusDiv) statusDiv.textContent = 'Deleting...';
+
+            try {
+                const res = await fetch('/delete_unicorn.php', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ id })
+                });
+                const data = await res.json();
+
+                if (data.success) {
+                    if (statusDiv) {
+                        statusDiv.textContent = 'Deleted';
+                        statusDiv.className = 'status success';
+                    }
+                    setTimeout(() => row.remove(), 1000);
+                } else {
+                    if (statusDiv) {
+                        statusDiv.textContent = 'Error: ' + (data.error || 'Unknown error');
+                        statusDiv.className = 'status error';
+                    }
+                }
+            } catch (err) {
+                if (statusDiv) statusDiv.textContent = 'Network error';
             }
-        }
-
-        $total = 0;
-        foreach ($_SESSION['cart']['product'] as $id => $qty) {
-            $total += $productData[$id]['price'] * $qty;
-        }
-
-        try {
-            $pdo->beginTransaction();
-
-            // Используем CURRENT_TIMESTAMP или NOW() в зависимости от версии MySQL
-            $stmt = $pdo->prepare("INSERT INTO `Order` (user_id, total_price, status, date) VALUES (?, ?, 'created', CURRENT_TIMESTAMP)");
-            $stmt->execute([$_SESSION['user_id'], $total]);
-            $orderId = $pdo->lastInsertId();
-
-            foreach ($_SESSION['cart']['product'] as $id => $qty) {
-                $subtotal = $productData[$id]['price'] * $qty;
-                $stmt = $pdo->prepare("INSERT INTO `OrderItem` (order_id, product_id, quantity, subtotal) VALUES (?, ?, ?, ?)");
-                $stmt->execute([$orderId, $id, $qty, $subtotal]);
-            }
-
-            // Уменьшаем количество на складе
-            foreach ($_SESSION['cart']['product'] as $id => $qty) {
-                $stmt = $pdo->prepare("UPDATE `Product` SET stock_quantity = stock_quantity - ? WHERE id = ?");
-                $stmt->execute([$qty, $id]);
-            }
-
-            $pdo->commit();
-            unset($_SESSION['cart']['product']);
-            header('Location: cart.php?message=order_created&id=' . $orderId);
-            exit;
-
-        } catch (PDOException $e) {
-            $pdo->rollback();
-            error_log("Order creation error: " . $e->getMessage()); // Записываем ошибку в лог
-            header('Location: cart.php?error=order_failed');
-            exit;
-        }
-    }
-}
-
-// === ДАННЫЕ ДЛЯ ОТОБРАЖЕНИЯ ===
-$cartItems = [];
-$total = 0;
-
-if (!empty($_SESSION['cart']['product'])) {
-    $productIds = array_keys($_SESSION['cart']['product']);
-    $placeholders = str_repeat('?,', count($productIds) - 1) . '?';
-    $stmt = $pdo->prepare("SELECT id, name, image, price FROM `Product` WHERE id IN ($placeholders)");
-    $stmt->execute($productIds);
-    $productList = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
-    foreach ($productList as $p) {
-        $qty = $_SESSION['cart']['product'][$p['id']];
-        $itemTotal = $p['price'] * $qty;
-        $cartItems[] = [
-            'id' => $p['id'],
-            'name' => $p['name'],
-            'image' => $p['image'],
-            'price' => $p['price'],
-            'quantity' => $qty,
-            'total' => $itemTotal
-        ];
-        $total += $itemTotal;
-    }
-}
-?>
-
-<?php include 'templates/header.html'; ?>
-
-        <div class="container">
-            <h1>Your Cart</h1>
-
-            <?php if (isset($_GET['message'])): ?>
-                <?php if ($_GET['message'] === 'added'): ?>
-                    <div class="message success">Item added to cart!</div>
-                <?php elseif ($_GET['message'] === 'removed'): ?>
-                    <div class="message success">Item removed.</div>
-                <?php elseif ($_GET['message'] === 'order_created'): ?>
-                    <div class="message success">Order #<?= htmlspecialchars($_GET['id']) ?> created successfully!</div>
-                <?php endif; ?>
-            <?php endif; ?>
-
-            <?php if (isset($_GET['error'])): ?>
-                <div class="message error">
-                    <?php if ($_GET['error'] === 'empty'): ?>
-                        Cart is empty.
-                    <?php elseif ($_GET['error'] === 'order_failed'): ?>
-                        Error creating order.
-                    <?php elseif ($_GET['error'] === 'out_of_stock'): ?>
-                        Item out of stock.
-                    <?php elseif ($_GET['error'] === 'stock_changed'): ?>
-                        Some items changed stock. Please review cart.
-                    <?php elseif ($_GET['error'] === 'stock_limit'): ?>
-                        Cannot add more than available in stock.
-                    <?php endif; ?>
-                </div>
-            <?php endif; ?>
-
-            <?php if (empty($cartItems)): ?>
-                <p style="text-align: center; font-size: 1.1rem; color: #2e2735; margin: 30px 0;">
-                    Your cart is empty. <a href="products.php" class="btn btn-secondary" style="margin-left: 10px;">Go to Shop</a>
-                </p>
-            <?php else: ?>
-                <form method="POST" action="cart.php?action=update">
-                    <table class="cart-table">
-                        <thead>
-                            <tr>
-                                <th>Product</th>
-                                <th>Price</th>
-                                <th>Quantity</th>
-                                <th>Total</th>
-                                <th>Action</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <?php foreach ($cartItems as $item): ?>
-                                <tr>
-                                    <td>
-                                        <img src="<?= htmlspecialchars($item['image']) ?>" alt="<?= htmlspecialchars($item['name']) ?>" class="product-img">
-                                        <?= htmlspecialchars($item['name']) ?>
-                                    </td>
-                                    <td><?= number_format($item['price'], 2, ',', ' ') ?> eur.</td>
-                                    <td>
-                                        <input type="number" name="quantities[<?= $item['id'] ?>]" value="<?= $item['quantity'] ?>" min="1" style="width: 70px; padding: 6px; border: 1px solid #ccc; border-radius: 4px;">
-                                    </td>
-                                    <td><?= number_format($item['total'], 2, ',', ' ') ?> eur.</td>
-                                    <td>
-                                        <a href="cart.php?action=remove&id=<?= $item['id'] ?>" class="btn btn-secondary btn-sm" 
-                                           onclick="return confirm('Remove?')">Remove</a>
-                                    </td>
-                                </tr>
-                            <?php endforeach; ?>
-                        </tbody>
-                        <tfoot>
-                            <tr class="total-row">
-                                <td colspan="3" style="text-align: right;">Total:</td>
-                                <td><?= number_format($total, 2, ',', ' ') ?> eur.</td>
-                                <td>
-                                    <button type="submit" class="btn btn-primary" style="font-size: 16px; padding: 8px 16px;">Update</button>
-                                </td>
-                            </tr>
-                        </tfoot>
-                    </table>
-                </form>
-
-                <div style="text-align: center; margin: 30px 0;">
-                    <a href="products.php" class="btn btn-secondary" style="margin-right: 15px;">Continue Shopping</a>
-                    <a href="cart.php?action=checkout" class="btn btn-primary" 
-                       onclick="return confirm('Place order for <?= number_format($total, 2, ',', ' ') ?> eur.?')">
-                        Checkout
-                    </a>
-                </div>
-            <?php endif; ?>
-        </div>
-
-<?php
-$jsFile = 'js/cart.js';
-include 'templates/footer.html';
-?>
+        });
+    });
+});
