@@ -223,3 +223,95 @@ body {
 .status-cancelled {
     color: #dc3545;
 }
+
+/* ✅ Десктопное меню */
+.desktop-menu {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+/* ✅ Мобильное меню */
+.mobile-menu-container {
+    position: relative;
+}
+
+.mobile-menu-toggle {
+    display: none;
+    background: none;
+    border: none;
+    font-size: 1.5em;
+    cursor: pointer;
+    color: white;
+    padding: 10px;
+    margin-left: 10px;
+    transition: transform 0.2s, background-color 0.2s;
+    border-radius: 6px;
+}
+
+    .mobile-menu-toggle:hover {
+        background-color: rgba(255, 255, 255, 0.1);
+        transform: scale(1.1);
+    }
+
+    .mobile-menu-toggle:active {
+        background-color: rgba(255, 255, 255, 0.2);
+        transform: scale(0.95);
+    }
+
+.mobile-navbar-links {
+    display: none;
+    position: fixed;
+    top: 60px;
+    left: 0;
+    right: 0;
+    background: white;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    z-index: 1000;
+    max-height: calc(100vh-60px);
+    overflow-y: auto;
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+}
+
+    .mobile-navbar-links.active {
+        display: block;
+    }
+
+/* ✅ Стили для ссылок */
+.nav-link {
+    color: white;
+    text-decoration: none;
+    padding: 10px 15px;
+    display: block;
+}
+
+/* ✅ Стили для мобильных ссылок */
+.mobile-navbar-links .nav-link {
+    color: #2c3e50;
+    padding: 15px 20px;
+    border-bottom: 1px solid #eee;
+    display: block;
+    text-decoration: none;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+/* ✅ Мобильная версия */
+@media (max-width: 768px) {
+    .desktop-menu {
+        display: none;
+    }
+
+    .mobile-menu-toggle {
+        display: block;
+    }
+}
+
+/* ✅ Десктопная версия */
+@media (min-width: 769px) {
+    .mobile-menu-container {
+        display: none;
+    }
+}

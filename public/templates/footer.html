@@ -1,16 +1,30 @@
-        </main>
+</main>
 
-        <footer class="site-footer">
-            <div>
-                <p>&copy; <?php echo date('Y'); ?> Unicorns World. All rights reserved.</p>
-                <p style="margin-top: 10px; font-size: 0.85rem;">
-                    We care about your privacy.
-                    <a href="privacy.php">Privacy Policy</a>
-                </p>
-            </div>
-        </footer>
+<footer class="site-footer">
+    <div>
+        <p>&copy; <?php echo date('Y'); ?> Unicorns World. All rights reserved.</p>
+        <p style="margin-top: 10px; font-size: 0.85rem;">
+            We care about your privacy.
+            <a href="privacy.php">Privacy Policy</a>
+        </p>
+    </div>
+</footer>
 
-        <script src="<?php echo $jsFile ?? 'js/main.js'; ?>" defer></script>
-        <?php if (isset($additionalJs)) echo '<script src="' . $additionalJs . '" defer></script>'; ?>
-    </body> 
+<script src="js/header_data.php"></script>
+<!-- ✅ Подключаем cart.js на всех страницах -->
+<script src="js/cart.js"></script>
+
+<script src="js/products.js"></script>
+
+<script src="js/mobile_menu.js"></script>
+
+<!-- ✅ Подключаем основной JS -->
+<script src="<?php echo $jsFile ?? 'js/main.js'; ?>" defer></script>
+
+<!-- ✅ Подключаем дополнительный JS -->
+<?php if (isset($additionalJs)): ?>
+    <script src="<?= $additionalJs ?>" ></script>
+<?php endif; ?>
+
+</body>
 </html>

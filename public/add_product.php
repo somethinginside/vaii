@@ -34,7 +34,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 
-include 'templates/admin_header.html';
+include 'templates/header.html';
 include 'templates/product_form.html';
 include 'templates/footer.html';
 ?>

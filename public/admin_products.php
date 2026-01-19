@@ -15,7 +15,9 @@ $stmt = $pdo->prepare("
 $stmt->execute();
 $products = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-include 'templates/admin_header.html';
+include 'templates/header.html';
 include 'templates/admin_products.html';
+$JsFile = 'js/main.js';
+$additionalJs = 'js/admin_products.js';  
 include 'templates/footer.html';
 ?>

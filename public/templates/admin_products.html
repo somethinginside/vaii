@@ -41,12 +41,12 @@
                             </td>
                             <td class="field" data-field="description">
                                 <span class="text"><?= htmlspecialchars($p['description']) ?></span>
-                                <input type="text" class="edit-input" value="<?= htmlspecialchars($p['description']) ?>" style="display:none; width:100%">
+                                <textarea class="edit-input" rows="2" style="display:none; width:100%"><?= htmlspecialchars($p['description']) ?></textarea>
                             </td>
                             <td class="field" data-field="image">
-                                <img src="<?htmlspecialchars($p['image']) ?>" alt="Image" width="60" style="display: block; margin-bottom: 5px; border:1px solid #eee; border-radius: 6px;" />
+                                <img src="<?= htmlspecialchars($p['image']) ?>" alt="Image" width="60" style="display:block; margin-bottom:5px; border:1px solid #eee; border-radius: 6px;">
                                 <span class="text" style="display:none;"></span>
-                                <input type="text" class="edit-input" value="<?= htmlspecialchars($p['image']) ?>" placeholder="URL image" style="display:none; width:100%">
+                                <input type="text" class="edit-input" value="<?= htmlspecialchars($p['image']) ?>" placeholder="URL изображения" style="display:none; width:100%">
                             </td>
                             <td>
                                 <button class="btn btn-warning btn-sm edit-btn">Edit</button>

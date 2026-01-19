@@ -17,9 +17,9 @@ $stmt->execute();
 $unicorns = $stmt->fetchAll(PDO::FETCH_ASSOC);
 ?>
 
-<?php include 'templates/admin_header.html';
+<?php include 'templates/header.html';
 $jsFile ='js/main.js';
-$additionalJs = 'js/admin.js';
+$additionalJs = 'js/admin_unicorns.js';
 include 'templates/admin_unicorns.html';
 include 'templates/footer.html';
 ?>

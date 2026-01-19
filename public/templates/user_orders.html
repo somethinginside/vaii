@@ -2,36 +2,40 @@
             <h2>My Orders</h2>
 
             <?php if (empty($orders)): ?>
-            <p>You haven't placed any orders yet.</p>
+            <p>You have no orders yet.</p>
             <?php else: ?>
             <div style="overflow-x: auto; background: white; border-radius: 14px; box-shadow: 0 2px 8px rgba(0,0,0,0.08);">
-                <table class="admin-table" style="width: 100%"; max-width: none; table-layout: auto;>
+                <table class="admin-table" style="width: 100%; border-collapse: collapse;">
                     <thead>
-                        <tr>
-                            <th>ID</th>
-                            <th>Date</th>
-                            <th>Total</th>
-                            <th>Status</th>
-                            <th>Items</th>
+                        <tr style="background: #f5f7fa; font-weight: bold; text-align: left;">
+                            <th style="padding: 12px 16px; border-bottom: 2px solid #ddd;">ID</th>
+                            <th style="padding: 12px 16px; border-bottom: 2px solid #ddd;">Date</th>
+                            <th style="padding: 12px 16px; border-bottom: 2px solid #ddd;">Total</th>
+                            <th style="padding: 12px 16px; border-bottom: 2px solid #ddd;">Status</th>
+                            <th style="padding: 12px 16px; border-bottom: 2px solid #ddd;">Items</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <?php foreach ($orders as $order): ?>
-                        <tr>
-                            <td>#<?= $order['id'] ?></td>
-                            <td><?= $order['date'] ?></td>
-                            <td><?= number_format($order['total_price'], 2, ',', ' ') ?> eur.</td>
-                            <td>
-                                <span class="status-<?= $order['status'] ?>">
-                                    <?= ucfirst($order['status']) ?>
-                                </span>
-                            </td>
-                            <td>
-                                <?php if ($order['items_names']): ?>
-                                    <?= htmlspecialchars($order['items_names']) ?>
-                                <?php else: ?>
-                                    No items
-                                <?php endif; ?>
+                        <?php foreach ($orders as $o): ?>
+                        <tr style="border-bottom: 1px solid #eee;">
+                            <td style="padding: 12px 16px;"><?= htmlspecialchars('#' . $o['id']) ?></td>
+                            <td style="padding: 12px 16px;"><?= htmlspecialchars($o['date']) ?></td>
+                            <td style="padding: 12px 16px;"><?= number_format($o['total_price'], 2) ?> eur.</td>
+                            <td style="padding: 12px 16px; color: <?=
+                                                $o['status'] === 'created' ? '#ff9800' :
+                                                ($o['status'] === 'shipped' ? '#2196F3' :
+                                                ($o['status'] === 'ready' ? '#4CAF50' :
+                                                ($o['status'] === 'done' ? '#8BC34A' : '#F44336'))) ?>;">
+                                                <?= htmlspecialchars($o['status']) ?>
+                                            </td>
+                            <td style="padding: 12px 16px; max-width: 200px; word-break: break-all;">
+                                <?php
+                                // ✅ Получаем товары для этого заказа
+                                $stmt = $pdo->prepare("SELECT p.name FROM OrderItem oi JOIN Product p ON oi.product_id = p.id WHERE oi.order_id = ?");
+                                $stmt->execute([$o['id']]);
+                                $items = $stmt->fetchAll(PDO::FETCH_COLUMN);
+                                echo implode(', ', $items);
+                                ?>
                             </td>
                         </tr>
                         <?php endforeach; ?>
@@ -39,13 +43,4 @@
                 </table>
             </div>
             <?php endif; ?>
-        </div>
-
-        <!-- Modal -->
-        <div id="order-modal" class="modal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:1000; justify-content:center; align-items:center;">
-            <div class="modal-content" style="background:white; padding:25px; border-radius:14px; max-width:600px; width:90%; max-height:80vh; overflow:auto;">
-                <h3>Order Details <span id="order-id-placeholder"></span></h3>
-                <div id="order-details-content"></div>
-                <button id="close-modal" class="btn btn-secondary" style="margin-top:20px;">Close</button>
-            </div>
         </div>

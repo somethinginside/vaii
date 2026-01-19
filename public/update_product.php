@@ -32,7 +32,7 @@ $category = trim($input['category']);
 $description = trim($input['description']);
 $image = trim($input['image']);
 
-if (empty($name) || $price < 0 || $stockQuantity < 0 || empty($category || empty($description) || empty($image)) {
+if (empty($name) || $price < 0 || $stockQuantity < 0 || empty($category) || empty($description) || empty($image)) {
     http_response_code(400);
     echo json_encode(['error' => 'All fields required']);
     exit;
@@ -42,7 +42,7 @@ try {
     $stmt = $pdo->prepare("UPDATE Product SET name = ?, price = ?, stock_quantity = ?, category = ?, description = ?, image = ? WHERE id = ?");
     $stmt->execute([$name, $price, $stockQuantity, $category, $description, $image, $id]);
 
-    // ? ѕровер¤ем, существует ли продукт до обновлени¤
+    // ✅ Проверяем, существует ли продукт до обновления
     $checkStmt = $pdo->prepare("SELECT id FROM Product WHERE id = ?");
     $checkStmt->execute([$id]);
     $exists = $checkStmt->fetch();

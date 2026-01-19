@@ -7,28 +7,47 @@ if (!isset($_SESSION['user_id']) || $_SESSION['user_role'] !== 'admin') {
     exit;
 }
 
-if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-    http_response_code(405);
+$input = json_decode(file_get_contents('php://input'), true);
+
+if (!$input || !isset($input['id']) || !isset($input['status'])) {
+    http_response_code(400);
+    echo json_encode(['error' => 'Invalid input']);
     exit;
 }
 
-$orderId = (int)($_POST['order_id'] ?? 0);
-$newStatus = $_POST['status'] ?? '';
+$orderId = (int)$input['id'];
+$newStatus = trim($input['status']);
 
-$availableStatuses = ['created', 'shipped','ready', 'done'];
-
-if ($orderId <= 0 || !in_array($newStatus, $availableStatuses)) {
-    header('Location: admin_orders.php?error=invalid');
+// ✅ Проверяем, что статус допустим
+$allowedStatuses = ['pending', 'confirmed', 'shipped', 'delivered', 'cancelled'];
+if (!in_array($newStatus, $allowedStatuses)) {
+    http_response_code(400);
+    echo json_encode(['error' => 'Invalid status']);
     exit;
 }
 
 try {
+    // ✅ Проверим, существует ли заказ
+    $checkStmt = $pdo->prepare("SELECT id FROM `Order` WHERE id = ?");
+    $checkStmt->execute([$orderId]);
+    $orderExists = $checkStmt->fetch();
+
+    if (!$orderExists) {
+        http_response_code(400);
+        echo json_encode(['error' => 'Order not found']);
+        exit;
+    }
+
     $stmt = $pdo->prepare("UPDATE `Order` SET status = ? WHERE id = ?");
     $stmt->execute([$newStatus, $orderId]);
-    header('Location: admin_orders.php?message=updated');
-    exit;
+
+    if ($stmt->rowCount() > 0) {
+        echo json_encode(['success' => true]);
+    } else {
+        echo json_encode(['error' => 'Order not found']);
+    }
 } catch (PDOException $e) {
-    header('Location: admin_orders.php?error=db');
-    exit;
+    error_log("Update order status error: " . $e->getMessage());
+    echo json_encode(['error' => 'Database error']);
 }
 ?>

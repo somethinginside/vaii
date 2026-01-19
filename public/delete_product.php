@@ -18,7 +18,18 @@ if (!$input || !isset($input['id']) || !is_numeric($input['id'])) {
 $id = (int)$input['id'];
 
 try {
-    $stmt = $pdo->prepare("DELETE FROM `Product` WHERE id = ?");
+    // ? Проверяем, есть ли заказы с этим продуктом
+    $stmt = $pdo->prepare("SELECT COUNT(*) FROM OrderItem WHERE product_id = ?");
+    $stmt->execute([$id]);
+    $orderCount = $stmt->fetchColumn();
+
+    if ($orderCount > 0) {
+        echo json_encode(['error' => 'Cannot delete product: linked to ' . $orderCount . ' order(s)']);
+        exit;
+    }
+
+    // ? Удаляем продукт
+    $stmt = $pdo->prepare("DELETE FROM Product WHERE id = ?");
     $stmt->execute([$id]);
 
     if ($stmt->rowCount() > 0) {
@@ -27,6 +38,7 @@ try {
         echo json_encode(['error' => 'Product not found']);
     }
 } catch (PDOException $e) {
+    error_log("Delete product error: " . $e->getMessage());
     echo json_encode(['error' => 'Database error']);
 }
 ?>
