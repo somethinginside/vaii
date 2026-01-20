@@ -18,13 +18,17 @@
 
 <script src="js/mobile_menu.js"></script>
 
+<?php if (basename($_SERVER['PHP_SELF']) === 'products.php'): ?>
+    <script src="js/products.js"></script>
+<?php endif; ?>
 <!-- ✅ Подключаем основной JS -->
 <script src="<?php echo $jsFile ?? 'js/main.js'; ?>" defer></script>
 
 <!-- ✅ Подключаем дополнительный JS -->
 <?php if (isset($additionalJs)): ?>
-    <script src="<?= $additionalJs ?>" ></script>
+<script src="<?= $additionalJs ?>"></script>
 <?php endif; ?>
+
 
 </body>
 </html>

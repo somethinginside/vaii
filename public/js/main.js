@@ -1,6 +1,5 @@
 document.addEventListener('DOMContentLoaded', function () {
     console.log('Main scripts loaded');
-
     // === ÏÐÎÑÌÎÒÐ ÄÅÒÀËÅÉ ÇÀÊÀÇÀ (äëÿ user_orders.php) ===
     if (document.querySelector('.view-order-btn')) {
         document.querySelectorAll('.view-order-btn').forEach(btn => {

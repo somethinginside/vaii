@@ -5,13 +5,16 @@ const menuData = {
         { href: 'logout.php', text: 'Logout' }
     ],
     user: [
+
+        { href: 'unicorns.php', text: 'Unicorns' },
+        { href: 'products.php', text: 'Products' },
         { href: 'cart.php', text: 'Cart (<span class="cart-count">0</span>)' },
         { href: 'dashboard.php', text: 'Profile' },
-        { href: 'logout.php', text: 'Logout' },
-        { href: 'unicorns.php', text: 'Unicorns' },
-        {href: 'products.php', text: 'Products'}
+        { href: 'logout.php', text: 'Logout' }
     ],
     guest: [
+        { href: 'unicorns.php', text: 'Unicorns' },
+        { href: 'products.php', text: 'Products' },
         { href: 'login.php', text: 'Login' },
         { href: 'register.php', text: 'Register' }
     ]
@@ -49,14 +52,10 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // ✅ Создаём мобильное меню
     function createMobileMenu() {
-        console.log('container called');
         const container = document.getElementById('mobile-nav-links');
-        console.log('container found:', container);
         container.innerHTML = '';
-        console.log('links array:', links);
 
         links.forEach(link => {
-            console.log('creating link ${index}:', link);
             const a = document.createElement('a');
             a.href = link.href;
             a.className = 'nav-link';
@@ -68,7 +67,6 @@ document.addEventListener('DOMContentLoaded', function () {
             a.innerHTML = link.text;
             container.appendChild(a);
         });
-        console.log('container innerhtml after creation', container.innerHTML);
         updateCartCount();
     }
 

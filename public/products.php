@@ -13,6 +13,5 @@ $products = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 include 'templates/header.html';
 include 'templates/products.html';
-$additionalJs = 'js/products.js';
 include 'templates/footer.html';
 ?>

@@ -6,7 +6,7 @@
             <?php else: ?>
             <!-- ✅ Кастомное выпадающее меню с категориями -->
             <div class="custom-dropdown" style="position: relative; display: inline-block; margin-bottom: 20px;">
-                <button class="dropdown-btn" onclick="toggleDropdown()" style="
+                <button class="dropdown-btn" id="filter-button" style="
                                 background: linear-gradient(135deg, #6e8efb 0%, #a777e3 100%);
                                 color: white;
                                 padding: 12px 20px;
@@ -20,46 +20,65 @@
                                 box-shadow: 0 4px 15px rgba(110, 142, 251, 0.3);
                                 transition: all 0.3s ease;
                             ">
-                    <span>Filter by Category</span>
+                    <span>Filter Products</span>
                     <svg width="12" height="8" viewBox="0 0 12 8" fill="none" xmlns="http://www.w3.org/2000/svg" style="transition: transform 0.3s ease;">
                         <path d="M1 1L6 6L11 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
                     </svg>
                 </button>
 
                 <div id="dropdown-content" class="dropdown-content" style="
-                                position: absolute;
-                                background: white;
-                                min-width: 200px;
-                                box-shadow: 0 8px 25px rgba(0,0,0,0.15);
-                                border-radius: 12px;
-                                z-index: 1000;
-                                display: none;
-                                margin-top: 8px;
-                                overflow: hidden;
-                                border: 1px solid #eee;
-                            ">
-                    <div class="dropdown-item" onclick="selectCategory('')" style="
-                                    padding: 12px 16px;
-                                    cursor: pointer;
-                                    transition: background 0.2s;
-                                    border-bottom: 1px solid #f0f0f0;
+                                    position: absolute;
+                                    background: white;
+                                    min-width: 250px;
+                                    box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+                                    border-radius: 12px;
+                                    z-index: 1000;
+                                    display: none;
+                                    margin-top: 8px;
+                                    overflow: hidden;
+                                    border: 1px solid #eee;
                                 ">
-                        All Categories
+                    <!-- ✅ Фильтр по категории -->
+                    <div class="filter-section">
+                        <div class="filter-title" style="padding: 10px 15px; font-weight: bold; border-bottom: 1px solid #f0f0f0;">Category</div>
+                        <div class="dropdown-item" data-category="">
+                            All Categories
+                        </div>
+
+                        <?php
+                        $categories = array_unique(array_column($products, 'category'));
+                        foreach ($categories as $cat):
+                        ?>
+                        <div class="dropdown-item" data-category="<?= htmlspecialchars($cat) ?>">
+                            <?= htmlspecialchars($cat) ?>
+                        </div>
+                        <?php endforeach; ?>
+                    </div>
+                    <!-- ✅ Фильтр по цене -->
+                    <div class="filter-section">
+                        <div class="filter-title" style="padding: 10px 15px; font-weight: bold; border-bottom: 1px solid #f0f0f0;">Price Sort</div>
+                        <div class="dropdown-item" data-price-sort="default">
+                            Default Order
+                        </div>
+                        <div class="dropdown-item" data-price-sort="low-high">
+                            Price: Low to High
+                        </div>
+                        <div class="dropdown-item" data-price-sort="high-low">
+                            Price: High to Low
+                        </div>
                     </div>
 
-                    <?php
-                    $categories = array_unique(array_column($products, 'category'));
-                    foreach ($categories as $cat):
-                    ?>
-                    <div class="dropdown-item" onclick="selectCategory('<?= addslashes(htmlspecialchars($cat)) ?>')" style="
-                                        padding: 12px 16px;
-                                        cursor: pointer;
-                                        transition: background 0.2s;
-                                        border-bottom: 1px solid #f0f0f0;
-                                    ">
-                        <?= htmlspecialchars($cat) ?>
+                    <!-- ✅ Фильтр по названию -->
+                    <div class="filter-section">
+                        <div class="filter-title" style="padding: 10px 15px; font-weight: bold; border-bottom: 1px solid #f0f0f0;">Name Filter</div>
+                        <input type="text" id="name-filter-input" placeholder="Search by name..." style="
+                                            width: 100%;
+                                            padding: 10px 15px;
+                                            border: none;
+                                            border-bottom: 1px solid #f0f0f0;
+                                            outline: none;
+                                        ">
                     </div>
-                    <?php endforeach; ?>
                 </div>
             </div>
             <div id="products-container" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 20px;">
@@ -68,24 +87,10 @@
                      data-category="<?= htmlspecialchars($product['category']) ?>"
                      style="border: 1px solid #eee; border-radius: 8px; padding: 15px; background: white; text-align: center;">
                     <img src="<?= htmlspecialchars($product['image']) ?>" alt="<?= htmlspecialchars($product['name']) ?>" width="100%" style="border-radius: 6px; margin-bottom: 10px;">
-
-                    <h3 style="margin: 10px 0; font-size: 18px;"><?= htmlspecialchars($product['name']) ?></h3>
-
-                    <p style="color: #666; margin: 5px 0; font-size: 14px;"><?= htmlspecialchars($product['category']) ?></p>
-
-                    <p style="color: #666; margin: 5px 0;"><?= htmlspecialchars($product['description']) ?></p>
-
-                    <p style="font-weight: bold; margin: 10px 0; font-size: 16px;">$<?= number_format($product['price'], 2) ?></p>
-
-                    <p style="color: #999; margin: 5px 0;">Stock: <?= (int)$product['stock_quantity'] ?></p>
-
-                    <button class="btn btn-primary add-to-cart-btn"
-                            data-id="<?= $product['id'] ?>"
-                            data-quantity="1"
-                            style="margin-top: 10px;"
-                                            <?= $product['stock_quantity'] <= 0 ? 'disabled' : '' ?>>
-                                        <?= $product['stock_quantity'] <= 0 ? 'Out of Stock' : 'Add to Cart' ?>
-                                    </button>
+                                        <h3><?= htmlspecialchars($product['name']) ?></h3>
+                    <p><?= htmlspecialchars($product['description']) ?></p>
+                    <p class="price">$<?= number_format($product['price'], 2) ?></p>
+                    <button class="btn btn-primary add-to-cart-btn" data-id="<?= $product['id'] ?>">Add to Cart</button>
                 </div>
                 <?php endforeach; ?>
             </div>
