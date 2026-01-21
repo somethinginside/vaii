@@ -9,6 +9,20 @@
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
+    <?php if (!empty($_SESSION['error'])): ?>
+        <div style="
+            background: #f8d7da;
+            color: #721c24;
+            padding: 10px;
+            text-align: center;
+            margin-bottom: 20px;
+            border-radius: 4px;
+        ">
+            <?= htmlspecialchars($_SESSION['error']) ?>
+        </div>
+        <?php unset($_SESSION['error']); // ✅ Очищаем после показа ?>
+        <?php session_destroy(); ?>
+    <?php endif; ?>
     <header style="background: linear-gradient(135deg, #6e8efb 0%, #a777e3 100%); padding: 15px 20px;">
         <nav class="navbar" style="display: flex; align-items: center; justify-content: space-between; position: relative;">
             <a href="index.php" class="nav-link" style="color: white; font-weight: bold; font-size: 1.2em; text-decoration: none;">🦄 Unicorns World</a>

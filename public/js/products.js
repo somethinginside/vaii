@@ -4,6 +4,7 @@ let selectedPriceSort = 'default';
 let selectedNameFilter = '';
 
 document.addEventListener('DOMContentLoaded', function () {
+
     console.log('Products JS loaded');
 
     const filterButton = document.getElementById('filter-button');

@@ -1,47 +1,54 @@
         <div class="container">
-            <h2>Manage Orders</h2>
+    <h2>Manage Orders</h2>
 
-            <?php if (empty($orders)): ?>
-            <p>No orders found.</p>
-            <?php else: ?>
-            <div style="overflow-x: auto; background: white; border-radius: 14px; box-shadow: 0 2px 8px rgba(0,0,0,0.08);">
-                <table class="admin-table" style="width: 100%;">
-                    <thead>
-                        <tr>
-                            <th>ID</th>
-                            <th>User</th>
-                            <th>Total</th>
-                            <th>Status</th>
-                            <th>Date</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <?php foreach ($orders as $o): ?>
-                        <tr data-id="<?= $o['id'] ?>" class="data-row">
-                            <td><?= htmlspecialchars($o['id']) ?></td>
-                            <td><?= htmlspecialchars($o['user_name'] ?? 'Unknown') ?></td>
-                            <td>$<?= number_format($o['total_price'], 2) ?></td>
-                            <td class="status-cell" data-field="status">
-                                <span class="status-text"><?= htmlspecialchars($o['status']) ?></span>
-                                <select class="status-select" style="display:none; width:100%; padding: 5px; border-radius: 4px;">
-                                    <option value="created" <?= $o['status'] === 'created' ? 'selected' : '' ?>>Created</option>
-                                    <option value="shipped" <?= $o['status'] === 'sipped' ? 'selected' : '' ?>>Shipped</option>
-                                    <option value="ready" <?= $o['status'] === 'ready' ? 'selected' : '' ?>>Ready</option>
-                                    <option value="done" <?= $o['status'] === 'done' ? 'selected' : '' ?>>Done</option>
-                                </select>
-                            </td>
-                            <td><?= htmlspecialchars($o['date']) ?></td>
-                            <td>
-                                <button class="btn btn-warning btn-sm edit-status-btn">Edit Status</button>
-                                <button class="btn btn-success btn-sm save-status-btn" style="display:none;">Save</button>
-                                <button class="btn btn-secondary btn-sm cancel-status-btn" style="display:none;">Cancel</button>
-                                <div class="status-message"></div>
-                            </td>
-                        </tr>
-                        <?php endforeach; ?>
-                    </tbody>
-                </table>
-            </div>
-            <?php endif; ?>
-        </div>
+    <?php if (empty($orders)): ?>
+    <p>No orders found.</p>
+    <?php else: ?>
+    <div style="overflow-x: auto; background: white; border-radius: 14px; box-shadow: 0 2px 8px rgba(0,0,0,0.08);">
+        <table class="admin-table" style="width: 100%;">
+            <thead>
+                <tr style="background: #f5f7fa; font-weight: bold; text-align: left;">
+                    <th class="admin-table th">ID</th>
+                    <th class="admin-table th">Date</th>
+                    <th class="admin-table th">Total</th>
+                    <th class="admin-table th">Delievery Adress</th>
+                    <th class="admin-table th">Phone</th>
+                    <th class="admin-table th">Status</th>
+                    <th class="admin-table th">Items</th>
+                    <th class="admin-table th">Actions</th>
+                </tr>
+            </thead>
+            </thead>
+            <tbody>
+                <?php foreach ($orders as $o): ?>
+                <tr data-id="<?= $o['id'] ?>" class="data-row">
+                    <td><?= htmlspecialchars($o['id']) ?></td>
+                    <td><?= htmlspecialchars($o['user_name'] ?? 'Unknown') ?></td>
+                    <td>$<?= number_format($o['total_price'], 2) ?></td>
+                    <td><?= htmlspecialchars($o['shipping_address']) ?></td>
+                    <td><?= htmlspecialchars($o['phone']) ?></td>
+                    <td class="status-cell" data-field="status">
+                        <span class="status-text"><?= htmlspecialchars($o['status']) ?></span>
+                        <select class="status-select" style="display:none; width:100%; padding: 5px; border-radius: 4px;">
+                            <option value="created" <?= $o['status'] === 'created' ? 'selected' : '' ?>>Created</option>
+                            <option value="shipped" <?= $o['status'] === 'sipped' ? 'selected' : '' ?>>Shipped</option>
+                            <option value="ready" <?= $o['status'] === 'ready' ? 'selected' : '' ?>>Ready</option>
+                            <option value="done" <?= $o['status'] === 'done' ? 'selected' : '' ?>>Done</option>
+                        </select>
+                    </td>
+                    <td><?= htmlspecialchars($o['date']) ?></td>
+                    <td>
+                        <button class="btn btn-warning btn-sm edit-status-btn">Edit Status</button>
+                        <button class="btn btn-success btn-sm save-status-btn" style="display:none;">Save</button>
+                        <button class="btn btn-secondary btn-sm cancel-status-btn" style="display:none;">Cancel</button>
+                        <div class="status-message"></div>
+                    </td>
+                </tr>
+                <?php endforeach; ?>
+            </tbody>
+        </table>
+    </div>
+    <?php endif; ?>
+
+    <a href="dashboard.php" class="btn btn-primary" style="margin-top: 15px;">Back to Dashboard</a>
+</div>

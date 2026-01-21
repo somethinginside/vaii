@@ -1,35 +1,40 @@
 <?php
-$pageTitle = 'Login - Unicorns World';
+session_start();
 include 'config.php';
 
 $error = '';
 
-if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    $email = trim($_POST['email']);
-    $password = $_POST['password'];
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $email = trim($_POST['email'] ?? '');
+    $password = $_POST['password'] ?? '';
 
     if (empty($email) || empty($password)) {
-        $error = 'Enter email and password!';
+        $error = 'Please fill in all fields.';
     } else {
-        $stmt = $pdo->prepare("SELECT * FROM User WHERE email = ?");
+        // РС‰РµРј РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ
+        $stmt = $pdo->prepare("SELECT id, password_hash, status, role FROM User WHERE email = ?");
         $stmt->execute([$email]);
-        $user = $stmt->fetch(PDO::FETCH_ASSOC);
+        $user = $stmt->fetch();
 
-        if ($user && verifyPassword($password, $user['password_hash'])) {
-            // Успешный вход
-            $_SESSION['user_id'] = $user['id'];
-            $_SESSION['user_name'] = $user['name'];
-            $_SESSION['user_role'] = $user['role'];
-
-            // Перенаправляем на личный кабинет
-            header('Location: dashboard.php');
-            exit;
+        if (!$user) {
+            $error = 'Invalid email or password.';
+        } elseif ($user['status'] === 'blocked') {
+            $error = 'Your account has been blocked. Please contact support.';
+        } elseif ($user['status'] === 'deleted') {
+            $error = 'Your account has been deleted.';
+        } elseif (!password_verify($password, $user['password_hash'])) {
+            $error = 'Invalid email or password.';
         } else {
-            $error = 'Wrong email or password!';
+            // РЈСЃРїРµС€РЅС‹Р№ РІС…РѕРґ
+            $_SESSION['user_id'] = $user['id'];
+            $_SESSION['user_role'] = $user['role'];
+            header('Location: index.php');
+            exit;
         }
     }
 }
 
+$pageTitle = 'Login';
 include 'templates/header.html';
 include 'templates/login_form.html';
 include 'templates/footer.html';

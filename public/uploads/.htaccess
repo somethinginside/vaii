@@ -1,0 +1,5 @@
+# Запретить выполнение PHP и скриптов
+<FilesMatch "\.(php|php5|phtml|pl|py|jsp|asp|sh|cgi)$">
+    Order Deny,Allow
+    Deny from all
+</FilesMatch>

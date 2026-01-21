@@ -19,7 +19,7 @@ $orderId = (int)$input['id'];
 $newStatus = trim($input['status']);
 
 // ✅ Проверяем, что статус допустим
-$allowedStatuses = ['pending', 'confirmed', 'shipped', 'delivered', 'cancelled'];
+$allowedStatuses = ['created', 'shipped', 'ready', 'done'];
 if (!in_array($newStatus, $allowedStatuses)) {
     http_response_code(400);
     echo json_encode(['error' => 'Invalid status']);

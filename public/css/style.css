@@ -83,6 +83,7 @@ body {
     margin-top: auto;
 }
 
+/*Buttons*/
 .btn {
     padding: 10px 20px;
     border: none;
@@ -91,36 +92,67 @@ body {
     text-decoration: none;
     display: inline-block;
 }
-
 .btn-primary {
     background: #766288;
     color: white;
 }
-
 .btn-secondary {
     background: #e2cbf6;
     color: #2e2735;
 }
-
 .btn-warning {
     background: orange;
     color: white;
 }
-
 .btn-success {
     background: green;
     color: white;
 }
-
 .btn-danger {
     background: red;
     color: white;
 }
-
 .btn-sm {
     padding: 6px 12px;
     font-size: 0.85rem;
 }
+
+/*Profile*/
+.profile-desc {
+    max-width: 900px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 30px;
+    align-items:flex-start;
+    justify-content:space-between;
+    margin: 30px auto;
+}
+.profile-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 15px;
+}
+.profile-table-details{
+    flex:1;
+    min-width: 250px;
+    background: white;
+    padding: 25px;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+}
+.profile-table-td {
+    padding: 12px 0;
+    border-bottom: 1px solid #eee;
+}
+.avatar-pr-img {
+    width: 160px;
+    height: 160px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid #e9ecef;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
 
 /* Products grid */
 .products-grid {
@@ -202,7 +234,7 @@ body {
     .message.success {
         background: #d4edda;
         color: #155724;
-    }
+            }
 
     .message.error {
         background: #f8d7da;

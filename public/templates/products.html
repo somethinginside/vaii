@@ -85,12 +85,33 @@
                 <?php foreach ($products as $product): ?>
                 <div class="product-card"
                      data-category="<?= htmlspecialchars($product['category']) ?>"
-                     style="border: 1px solid #eee; border-radius: 8px; padding: 15px; background: white; text-align: center;">
-                    <img src="<?= htmlspecialchars($product['image']) ?>" alt="<?= htmlspecialchars($product['name']) ?>" width="100%" style="border-radius: 6px; margin-bottom: 10px;">
-                                        <h3><?= htmlspecialchars($product['name']) ?></h3>
+                     style="border: 1px solid #eee; border-radius: 8px; padding: 15px; background: white; text-align: center; position: relative;">
+                    <img src="<?= htmlspecialchars($product['image']) ?>"
+                         alt="<?= htmlspecialchars($product['name']) ?>"
+                         width="100%"
+                         style="border-radius: 6px; margin-bottom: 10px; <?= $product['stock_quantity'] <= 0 ? 'filter: blur(3px); opacity: 0.6;' : '' ?>">
+                    <?php if ($product['stock_quantity'] <= 0): ?>
+                        <div style="
+                                position: absolute;
+                                top: 50%;
+                                left: 50%;
+                                transform: translate(-50%, -50%);
+                                background: rgba(0,0,0,0.7);
+                                color: white;
+                                padding: 6px 12px;
+                                border-radius: 20px;
+                                font-size: 0.9em;
+                                font-weight: bold;
+                                z-index: 2;
+
+                        ">Not available now</div>
+                    <?php endif; ?>
+                    <h3><?= htmlspecialchars($product['name']) ?></h3>
                     <p><?= htmlspecialchars($product['description']) ?></p>
                     <p class="price">$<?= number_format($product['price'], 2) ?></p>
-                    <button class="btn btn-primary add-to-cart-btn" data-id="<?= $product['id'] ?>">Add to Cart</button>
+                    <?php if (isset($_SESSION['user_id']) && $product['stock_quantity'] > 0): ?>
+                        <button class="btn btn-primary add-to-cart-btn" data-id="<?= $product['id'] ?>">Add to Cart</button>
+                    <?php endif; ?>
                 </div>
                 <?php endforeach; ?>
             </div>

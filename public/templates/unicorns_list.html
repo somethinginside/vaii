@@ -1,26 +1,98 @@
-        <div class="container">
-            <h2>Our Magical Unicorns</h2>
+    <div class="container">
+        <h2>Our Magical Unicorns</h2>
 
-            <?php if (empty($unicorns)): ?>
-            <p>No unicorns available yet.</p>
-            <?php else: ?>
-            <!-- ✅ Изменим на grid для отображения во всю ширину -->
-            <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 25px;">
-                <?php foreach ($unicorns as $u): ?>
-                <div style="border: 1px solid #eee; border-radius: 12px; padding: 20px; background: white; text-align: center; box-shadow: 0 4px 8px rgba(0,0,0,0.05); transition: transform 0.2s;">
-                    <img src="<?= htmlspecialchars($u['image']) ?>" alt="<?= htmlspecialchars($u['name']) ?>" width="100%" style="border-radius: 8px; margin-bottom: 15px; height: 250px; object-fit: cover;">
+        <?php if (empty($unicorns)): ?>
+        <p>No unicorns available yet.</p>
+        <?php else: ?>
+        <!-- ✅ Фильтр (только если есть хотя бы один единорог) -->
+        <div class="custom-dropdown" style="position: relative; display: inline-block; margin-bottom: 20px;">
+            <button class="dropdown-btn" id="filter-button" style="
+                    background: linear-gradient(135deg, #6e8efb 0%, #a777e3 100%);
+                    color: white;
+                    padding: 12px 20px;
+                    border: none;
+                    border-radius: 30px;
+                    cursor: pointer;
+                    font-size: 16px;
+                    display: flex;
+                    align-items: center;
+                    gap: 10px;
+                    box-shadow: 0 4px 15px rgba(110, 142, 251, 0.3);
+                    transition: all 0.3s ease;
+                ">
+                <span>Filter Unicorns</span>
+                <svg width="12" height="8" viewBox="0 0 12 8" fill="none" xmlns="http://www.w3.org/2000/svg" style="transition: transform 0.3s ease;">
+                    <path d="M1 1L6 6L11 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                </svg>
+            </button>
 
-                    <h3 style="margin: 10px 0; font-size: 1.2em; color: #2c3e50;"><?= htmlspecialchars($u['name']) ?></h3>
-
-                    <p style="color: #666; margin: 8px 0;"><?= htmlspecialchars($u['description']) ?></p>
-
-
-                    <p style="color: #999; margin: 8px 0; font-size: 0.9em;">Age: <?= (int)$u['age'] ?> years</p>
-
-                    <p style="color: #999; margin: 8px 0; font-size: 0.9em;">Color: <?= htmlspecialchars($u['color']) ?></p>
-
+            <div id="dropdown-content" class="dropdown-content" style="
+                    position: absolute;
+                    background: white;
+                    min-width: 250px;
+                    box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+                    border-radius: 12px;
+                    z-index: 1000;
+                    display: none;
+                    margin-top: 8px;
+                    overflow: hidden;
+                    border: 1px solid #eee;
+                ">
+                <!-- Фильтр по возрасту -->
+                <div class="filter-section">
+                    <div class="filter-title" style="padding: 10px 15px; font-weight: bold; border-bottom: 1px solid #f0f0f0;">Age</div>
+                    <div class="dropdown-item" data-age="">All Ages</div>
+                    <?php
+                    $ages = array_unique(array_column($unicorns, 'age'));
+                    sort($ages);
+                    foreach ($ages as $age): ?>
+                    <div class="dropdown-item" data-age="<?= (int)$age ?>"><?= (int)$age ?> years</div>
+                    <?php endforeach; ?>
                 </div>
-                <?php endforeach; ?>
+
+                <!-- Фильтр по цвету -->
+                <div class="filter-section">
+                    <div class="filter-title" style="padding: 10px 15px; font-weight: bold; border-bottom: 1px solid #f0f0f0;">Color</div>
+                    <div class="dropdown-item" data-color="">All Colors</div>
+                    <?php
+                    $colors = array_unique(array_column($unicorns, 'color'));
+                    sort($colors);
+                    foreach ($colors as $color): ?>
+                    <div class="dropdown-item" data-color="<?= htmlspecialchars($color) ?>"><?= htmlspecialchars($color) ?></div>
+                    <?php endforeach; ?>
+                </div>
             </div>
-            <?php endif; ?>
         </div>
+
+        <!-- ✅ Контейнер для активных фильтров (появится динамически) -->
+        <!-- ✅ Сетка единорогов -->
+        <div id="unicorns-container" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 25px;">
+            <?php foreach ($unicorns as $u): ?>
+            <div class="unicorn-card"
+                 data-age="<?= (int)$u['age'] ?>"
+                 data-color="<?= htmlspecialchars($u['color']) ?>"
+                         <?= isset($_SESSION['user_id']) ? 'data-id="' . $u['id'] . '"' : '' ?>
+                         style="border: 1px solid #eee; border-radius: 12px; padding: 20px; background: white; text-align: center; box-shadow: 0 4px 8px rgba(0,0,0,0.05); transition: transform 0.2s; cursor: <?= isset($_SESSION['user_id']) ? 'pointer' : 'default' ?>;"
+                         <?= isset($_SESSION['user_id']) ? 'onclick="openUnicornModal(' . $u['id'] . ')"' : '' ?>>
+                        <img src="<?= htmlspecialchars($u['image']) ?>" alt="<?= htmlspecialchars($u['name']) ?>" width="100%" style="border-radius: 8px; margin-bottom: 15px; height: 250px; object-fit: cover;">
+
+                        <h3 style="margin: 10px 0; font-size: 1.2em; color: #2c3e50;"><?= htmlspecialchars($u['name']) ?></h3>
+
+                        <!-- ❌ description убран из списка -->
+
+                        <p style="color: #999; margin: 8px 0; font-size: 0.9em;">Age: <?= (int)$u['age'] ?> years</p>
+                        <p style="color: #999; margin: 8px 0; font-size: 0.9em;">Color: <?= htmlspecialchars($u['color']) ?></p>
+                    </div>
+            <?php endforeach; ?>
+        </div>
+        <?php endif; ?>
+
+        <!-- ✅ Модальное окно (только для залогиненных) -->
+        <?php if (isset($_SESSION['user_id'])): ?>
+        <div id="unicorn-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 2000; justify-content: center; align-items: center;">
+            <div style="background: white; border-radius: 16px; max-width: 600px; width: 90%; max-height: 90vh; overflow-y: auto; padding: 25px; position: relative;">
+                <div id="modal-content"></div>
+            </div>
+        </div>
+        <?php endif; ?>
+    </div>

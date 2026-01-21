@@ -5,7 +5,6 @@ const menuData = {
         { href: 'logout.php', text: 'Logout' }
     ],
     user: [
-
         { href: 'unicorns.php', text: 'Unicorns' },
         { href: 'products.php', text: 'Products' },
         { href: 'cart.php', text: 'Cart (<span class="cart-count">0</span>)' },
@@ -20,23 +19,25 @@ const menuData = {
     ]
 };
 
-//let menuInitialized = false;
-
 document.addEventListener('DOMContentLoaded', function () {
     console.log('Menu loaded');
-    updateCartCount();
+    
     // ✅ Определяем тип пользователя
-    const userData = window.userData;
+    const userData = window.userData || { isLoggedIn: false, role: null };
     let links = menuData.guest;
+    
     if (userData.isLoggedIn) {
         links = userData.role === 'admin' ? menuData.admin : menuData.user;
     }
+    
     console.log('User data:', userData);
+
     // ✅ Создаём десктопное меню
     function createDesktopMenu() {
         const container = document.getElementById('desktop-nav-links');
+        if (!container) return;
+        
         container.innerHTML = '';
-
         links.forEach(link => {
             const a = document.createElement('a');
             a.href = link.href;
@@ -46,38 +47,39 @@ document.addEventListener('DOMContentLoaded', function () {
             a.innerHTML = link.text;
             container.appendChild(a);
         });
-
-        updateCartCount();
     }
 
     // ✅ Создаём мобильное меню
     function createMobileMenu() {
         const container = document.getElementById('mobile-nav-links');
+        if (!container) return;
+        
         container.innerHTML = '';
-
         links.forEach(link => {
             const a = document.createElement('a');
             a.href = link.href;
             a.className = 'nav-link';
-            a.style.color = '2c3e50';
+            a.style.color = '#2c3e50'; // ✅ Исправлен цвет
             a.style.textDecoration = 'none';
-            a.style.padding = '15 px 20px';
+            a.style.padding = '15px 20px'; // ✅ Убран пробел
             a.style.display = 'block';
             a.style.borderBottom = '1px solid #eee';
             a.innerHTML = link.text;
             container.appendChild(a);
         });
-        updateCartCount();
     }
 
     // ✅ Инициализация меню
     createDesktopMenu();
     createMobileMenu();
+    
+    // ✅ Обновляем корзину
+    updateCartCount();
 });
 
 function toggleMobileMenu() {
     const menu = document.querySelector('.mobile-navbar-links');
-    menu.classList.toggle('active');
+    if (menu) menu.classList.toggle('active');
 }
 
 // ✅ Закрываем меню при клике вне его
@@ -87,11 +89,13 @@ document.addEventListener('click', function (event) {
 
     if (menu && toggleBtn && !menu.contains(event.target) && !toggleBtn.contains(event.target)) {
         menu.classList.remove('active');
-    };
+    }
 });
 
+// ✅ Обновление счётчика корзины
 function updateCartCount() {
-    fetch('/get_cart_count.php?' + new Date().getTime, {
+    // ✅ Исправлено: getTime() вместо getTime
+    fetch('/get_cart_count.php?' + new Date().getTime(), {
         cache: 'no-cache'
     })
     .then(response => response.json())

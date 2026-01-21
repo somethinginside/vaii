@@ -10,7 +10,7 @@ if (!isset($_SESSION['user_id']) || $_SESSION['user_role'] !== 'admin') {
 $stmt = $pdo->prepare("
     SELECT o.*, u.name as user_name 
     FROM `Order` o 
-    LEFT JOIN User u ON o.user_id = u.id
+    LEFT JOIN User u ON o.user_id = u.id AND u.status != 'deleted'
     ORDER BY o.id DESC
 ");
 $stmt->execute();

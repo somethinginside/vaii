@@ -1,7 +1,7 @@
 <?php
 $pageTitle = 'My Orders';
 include 'config.php';
-
+include 'auth_check.php';
 if (!isset($_SESSION['user_id'])) {
     header('Location: login.php');
     exit;

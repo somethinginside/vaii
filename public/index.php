@@ -1,6 +1,8 @@
 <?php
+session_start();
 $pageTitle = 'Home — Unicorns World';
 include 'config.php';
+
 
 // ✅ Получаем последние товары
 $stmt = $pdo->prepare("SELECT * FROM Product ORDER BY id DESC LIMIT 8");

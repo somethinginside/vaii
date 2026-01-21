@@ -1,64 +1,66 @@
         <div class="container">
-            <h2>Manage Products</h2>
-            <a href="add_product.php" class="btn btn-primary" style="margin-bottom: 20px;">Add Product</a>
+    <h2>Manage Products</h2>
+    <a href="add_product.php" class="btn btn-primary" style="margin-bottom: 20px;">Add Product</a>
 
-            <?php if (empty($products)): ?>
-            <p>No products added.</p>
-            <?php else: ?>
-            <div style="overflow-x: auto; background: white; border-radius: 14px; box-shadow: 0 2px 8px rgba(0,0,0,0.08);">
-                <table class="admin-table" style="width: 100%;">
-                    <thead>
-                        <tr>
-                            <th>ID</th>
-                            <th>Name</th>
-                            <th>Price</th>
-                            <th>Stock Quantity</th>
-                            <th>Category</th>
-                            <th>Description</th>
-                            <th>Image</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <?php foreach ($products as $p): ?>
-                        <tr data-id="<?= $p['id'] ?>" class="data-row">
-                            <td><?= htmlspecialchars($p['id']) ?></td>
-                            <td class="field" data-field="name">
-                                <span class="text"><?= htmlspecialchars($p['name']) ?></span>
-                                <input type="text" class="edit-input" value="<?= htmlspecialchars($p['name']) ?>" style="display:none; width:100%">
-                            </td>
-                            <td class="field" data-field="price">
-                                <span class="text"><?= number_format($p['price'], 2, '.', ' ') ?></span>
-                                <input type="number" step="0.01" class="edit-input" value="<?= $p['price'] ?>" style="display:none; width:100%">
-                            </td>
-                            <td class="field" data-field="stock_quantity">
-                                <span class="text"><?= (int)$p['stock_quantity'] ?></span>
-                                <input type="number" class="edit-input" value="<?= $p['stock_quantity'] ?>" min="0" style="display:none; width:100%">
-                            </td>
-                            <td class="field" data-field="category">
-                                <span class="text"><?= htmlspecialchars($p['category']) ?></span>
-                                <input type="text" class="edit-input" value="<?= htmlspecialchars($p['category']) ?>" style="display:none; width:100%">
-                            </td>
-                            <td class="field" data-field="description">
-                                <span class="text"><?= htmlspecialchars($p['description']) ?></span>
-                                <textarea class="edit-input" rows="2" style="display:none; width:100%"><?= htmlspecialchars($p['description']) ?></textarea>
-                            </td>
-                            <td class="field" data-field="image">
-                                <img src="<?= htmlspecialchars($p['image']) ?>" alt="Image" width="60" style="display:block; margin-bottom:5px; border:1px solid #eee; border-radius: 6px;">
-                                <span class="text" style="display:none;"></span>
-                                <input type="text" class="edit-input" value="<?= htmlspecialchars($p['image']) ?>" placeholder="URL изображения" style="display:none; width:100%">
-                            </td>
-                            <td>
-                                <button class="btn btn-warning btn-sm edit-btn">Edit</button>
-                                <button class="btn btn-success btn-sm save-btn" style="display:none;">Save</button>
-                                <button class="btn btn-secondary btn-sm cancel-btn" style="display:none;">Cancel</button>
-                                <button class="btn btn-danger btn-sm delete-btn">Delete</button>
-                                <div class="status"></div>
-                            </td>
-                        </tr>
-                        <?php endforeach; ?>
-                    </tbody>
-                </table>
-            </div>
-            <?php endif; ?>
-        </div>
+    <?php if (empty($products)): ?>
+    <p>No products added.</p>
+    <?php else: ?>
+    <div style="overflow-x: auto; background: white; border-radius: 14px; box-shadow: 0 2px 8px rgba(0,0,0,0.08);">
+        <table class="admin-table" style="width: 100%;">
+            <thead>
+                <tr style="background: #f5f7fa; font-weight: bold; text-align: left;">
+                    <th class="admin-table th">ID</th>
+                    <th class="admin-table th">Name</th>
+                    <th class="admin-table th">Price</th>
+                    <th class="admin-table th">Stock Quantity</th>
+                    <th class="admin-table th">Category</th>
+                    <th class="admin-table th">Description</th>
+                    <th class="admin-table th">Image</th>
+                    <th class="admin-table th">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php foreach ($products as $p): ?>
+                <tr data-id="<?= $p['id'] ?>" class="data-row">
+                    <td><?= htmlspecialchars($p['id']) ?></td>
+                    <td class="field" data-field="name">
+                        <span class="text"><?= htmlspecialchars($p['name']) ?></span>
+                        <input type="text" class="edit-input" value="<?= htmlspecialchars($p['name']) ?>" style="display:none; width:100%">
+                    </td>
+                    <td class="field" data-field="price">
+                        <span class="text"><?= number_format($p['price'], 2, '.', ' ') ?></span>
+                        <input type="number" step="0.01" class="edit-input" value="<?= $p['price'] ?>" style="display:none; width:100%">
+                    </td>
+                    <td class="field" data-field="stock_quantity">
+                        <span class="text"><?= (int)$p['stock_quantity'] ?></span>
+                        <input type="number" class="edit-input" value="<?= $p['stock_quantity'] ?>" min="0" style="display:none; width:100%">
+                    </td>
+                    <td class="field" data-field="category">
+                        <span class="text"><?= htmlspecialchars($p['category']) ?></span>
+                        <input type="text" class="edit-input" value="<?= htmlspecialchars($p['category']) ?>" style="display:none; width:100%">
+                    </td>
+                    <td class="field" data-field="description">
+                        <span class="text"><?= htmlspecialchars($p['description']) ?></span>
+                        <textarea class="edit-input" rows="2" style="display:none; width:100%"><?= htmlspecialchars($p['description']) ?></textarea>
+                    </td>
+                    <td class="field" data-field="image">
+                        <img src="<?= htmlspecialchars($p['image']) ?>" alt="Image" width="60" style="display:block; margin-bottom:5px; border:1px solid #eee; border-radius: 6px;">
+                        <span class="text" style="display:none;"></span>
+                        <input type="text" class="edit-input" value="<?= htmlspecialchars($p['image']) ?>" placeholder="URL изображения" style="display:none; width:100%">
+                    </td>
+                    <td>
+                        <button class="btn btn-warning btn-sm edit-btn">Edit</button>
+                        <button class="btn btn-success btn-sm save-btn" style="display:none;">Save</button>
+                        <button class="btn btn-secondary btn-sm cancel-btn" style="display:none;">Cancel</button>
+                        <button class="btn btn-danger btn-sm delete-btn">Delete</button>
+                        <div class="status"></div>
+                    </td>
+                </tr>
+                <?php endforeach; ?>
+            </tbody>
+        </table>
+    </div>
+    <?php endif; ?>
+
+    <a href="dashboard.php" class="btn btn-primary" style="margin-top: 15px;">Back to Dashboard</a>
+</div>

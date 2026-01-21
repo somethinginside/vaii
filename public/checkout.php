@@ -1,6 +1,7 @@
 <?php
 $pageTitle = 'Checkout — Unicorns World';
 include 'config.php';
+include 'auth_check.php';
 
 // ✅ Проверяем, вошёл ли пользователь
 if (!isset($_SESSION['user_id'])) {
@@ -48,8 +49,25 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $pdo->beginTransaction();
 
             // ✅ Создаём заказ
-            $stmt = $pdo->prepare("INSERT INTO `Order` (user_id, date, total_price, status) VALUES (?, NOW(), ?, ?)");
-            $stmt->execute([$_SESSION['user_id'], $total, 'created']);
+            $shipping_address = trim($_POST['shipping_address']);
+            $phone = trim($_POST['phone']);
+
+            // ✅ Валидация (минимум)
+            if (empty($shipping_address) || empty($phone)) {
+                // ошибка
+            }
+
+            $stmt = $pdo->prepare("
+                INSERT INTO `Order` (user_id, total_price, shipping_address, phone, date)
+                VALUES (?, ?, ?, ?, NOW())
+            ");
+            $stmt->execute([
+                $_SESSION['user_id'],
+                $total,
+                $shipping_address,
+                $phone
+            ]);
+
             $orderId = $pdo->lastInsertId();
 
             // ✅ Добавляем товары в OrderItem

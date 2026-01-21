@@ -1,4 +1,4 @@
-        <div class="container">
+                <div class="container">
             <h2>My Orders</h2>
 
             <?php if (empty($orders)): ?>
@@ -11,6 +11,8 @@
                             <th style="padding: 12px 16px; border-bottom: 2px solid #ddd;">ID</th>
                             <th style="padding: 12px 16px; border-bottom: 2px solid #ddd;">Date</th>
                             <th style="padding: 12px 16px; border-bottom: 2px solid #ddd;">Total</th>
+                            <th style="padding: 12px 16px; border-bottom: 2px solid #ddd;">Delievery Adress</th>
+                            <th style="padding: 12px 16px; border-bottom: 2px solid #ddd;">Phone</th>
                             <th style="padding: 12px 16px; border-bottom: 2px solid #ddd;">Status</th>
                             <th style="padding: 12px 16px; border-bottom: 2px solid #ddd;">Items</th>
                         </tr>
@@ -21,16 +23,17 @@
                             <td style="padding: 12px 16px;"><?= htmlspecialchars('#' . $o['id']) ?></td>
                             <td style="padding: 12px 16px;"><?= htmlspecialchars($o['date']) ?></td>
                             <td style="padding: 12px 16px;"><?= number_format($o['total_price'], 2) ?> eur.</td>
+                            <td style="padding: 12px 16px;"><?= htmlspecialchars($o['shipping_address']) ?></td>
+                            <td style="padding: 12px 16px;"><?= htmlspecialchars($o['phone']) ?></td>
                             <td style="padding: 12px 16px; color: <?=
-                                                $o['status'] === 'created' ? '#ff9800' :
-                                                ($o['status'] === 'shipped' ? '#2196F3' :
-                                                ($o['status'] === 'ready' ? '#4CAF50' :
-                                                ($o['status'] === 'done' ? '#8BC34A' : '#F44336'))) ?>;">
-                                                <?= htmlspecialchars($o['status']) ?>
-                                            </td>
+                                                        $o['status'] === 'created' ? '#ff9800' :
+                                                        ($o['status'] === 'shipped' ? '#2196F3' :
+                                                        ($o['status'] === 'ready' ? '#4CAF50' :
+                                                        ($o['status'] === 'done' ? '#8BC34A' : '#F44336'))) ?>;">
+                                                        <?= htmlspecialchars($o['status']) ?>
+                                                       </td>
                             <td style="padding: 12px 16px; max-width: 200px; word-break: break-all;">
                                 <?php
-                                // ✅ Получаем товары для этого заказа
                                 $stmt = $pdo->prepare("SELECT p.name FROM OrderItem oi JOIN Product p ON oi.product_id = p.id WHERE oi.order_id = ?");
                                 $stmt->execute([$o['id']]);
                                 $items = $stmt->fetchAll(PDO::FETCH_COLUMN);
@@ -43,4 +46,6 @@
                 </table>
             </div>
             <?php endif; ?>
+
+            <a href="dashboard.php" class="btn btn-primary" style="margin-top: 15px;">Back to Dashboard</a>
         </div>

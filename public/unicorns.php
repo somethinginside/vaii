@@ -1,6 +1,8 @@
 <?php
+session_start();
 $pageTitle = 'Unicorns';
 include 'config.php';
+
 
 // Получаем всех единорогов
 $stmt = $pdo->prepare("

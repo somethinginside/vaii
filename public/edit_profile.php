@@ -1,76 +1,105 @@
 <?php
-$pageTitle = 'Edit Profile';
+session_start();
+$pageTitle = 'Edit Profile - Unicorns World';
 include 'config.php';
 
+// Защита
 if (!isset($_SESSION['user_id'])) {
     header('Location: login.php');
     exit;
 }
 
-$user = getCurrentUser();
-
 $error = '';
 $success = '';
 
-if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+// Получаем текущие данные
+$stmt = $pdo->prepare("SELECT name, email, avatar FROM User WHERE id = ?");
+$stmt->execute([$_SESSION['user_id']]);
+$user = $stmt->fetch();
+
+if (!$user) {
+    die('User not found.');
+}
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $name = trim($_POST['name'] ?? '');
     $email = trim($_POST['email'] ?? '');
-    $newPassword = $_POST['new_password'] ?? '';
-    $confirmPassword = $_POST['confirm_password'] ?? '';
+    $new_password = $_POST['new_password'] ?? '';
+    $confirm_password = $_POST['confirm_password'] ?? '';
 
-    // Начальные значения — текущие данные пользователя
-    $newName = $user['name'];
-    $newEmail = $user['email'];
-    $newHashedPassword = null;
+    // Определяем, какие поля обновлять
+    $updateName = !empty($name) ? $name : $user['name'];
+    $updateEmail = !empty($email) ? $email : $user['email'];
 
-    // Проверяем, что хотя бы что-то изменилось
-    $changesMade = false;
-
-    if (!empty($name) && $name !== $user['name']) {
-        $newName = $name;
-        $changesMade = true;
-    }
-
-    if (!empty($email) && $email !== $user['email']) {
-        // Проверяем, не занят ли email
-        $stmt = $pdo->prepare("SELECT id FROM User WHERE email = ? AND id != ?");
-        $stmt->execute([$email, $_SESSION['user_id']]);
-        if ($stmt->fetch()) {
-            $error = 'Email already exists.';
-        } else {
-            $newEmail = $email;
-            $changesMade = true;
-        }
-    }
-
-    if (!empty($newPassword)) {
-        if (empty($confirmPassword)) {
-            $error = 'Please confirm new password';
-        } elseif ($newPassword !== $confirmPassword) {
-            $error = 'New passwords do not match';
-        } else {
-            $newHashedPassword = hashPassword($newPassword);
-            $changesMade = true;
-        }
-
-    }
-
-    if (!$changesMade) {
-        $error = 'No changes made.';
-    } elseif (empty($error)) {
-        try {
-            if ($newHashedPassword) {
-                $stmt = $pdo->prepare("UPDATE User SET name = ?, email = ?, password = ? WHERE id = ?");
-                $stmt->execute([$newName, $newEmail, $newHashedPassword, $_SESSION['user_id']]);
-            } else {
-                $stmt = $pdo->prepare("UPDATE User SET name = ?, email = ? WHERE id = ?");
-                $stmt->execute([$newName, $newEmail, $_SESSION['user_id']]);
+    // Валидация email
+    if (!empty($email) && !filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        $error = 'Incorrect email!';
+    } elseif (!empty($new_password) && $new_password !== $confirm_password) {
+        $error = 'New passwords do not match!';
+    } else {
+        // Проверка уникальности email (если изменён)
+        if (!empty($email) && $email !== $user['email']) {
+            $stmt = $pdo->prepare("SELECT id FROM User WHERE email = ? AND id != ?");
+            $stmt->execute([$email, $_SESSION['user_id']]);
+            if ($stmt->fetch()) {
+                $error = 'Email already in use!';
             }
+        }
+
+        if (!$error) {
+            // Обработка аватара
+            $avatarPath = $user['avatar']; // сохраняем старый
+            if (!empty($_FILES['avatar']['name'])) {
+                $uploadDir = 'uploads/avatars/';
+                if (!is_dir($uploadDir)) mkdir($uploadDir, 0777, true);
+
+                $fileExt = pathinfo($_FILES['avatar']['name'], PATHINFO_EXTENSION);
+                $allowed = ['jpg', 'jpeg', 'png', 'gif'];
+                if (in_array(strtolower($fileExt), $allowed)) {
+                    // Удаляем старый аватар
+                    if ($user['avatar'] && file_exists($user['avatar'])) {
+                        unlink($user['avatar']);
+                    }
+                    $fileName = 'avatar_' . $_SESSION['user_id'] . '_' . time() . '.' . strtolower($fileExt);
+                    $filePath = $uploadDir . $fileName;
+                    if (move_uploaded_file($_FILES['avatar']['tmp_name'], $filePath)) {
+                        $avatarPath = $filePath;
+                    }
+                }
+            }
+
+            // Подготовка запроса
+            $fields = [];
+            $params = [];
+
+            $fields[] = "name = ?";
+            $params[] = $updateName;
+
+            $fields[] = "email = ?";
+            $params[] = $updateEmail;
+
+            $fields[] = "avatar = ?";
+            $params[] = $avatarPath;
+
+            if (!empty($new_password)) {
+                $fields[] = "password_hash = ?";
+                $params[] = hashPassword($new_password);
+            }
+
+            $params[] = $_SESSION['user_id'];
+
+            $sql = "UPDATE User SET " . implode(', ', $fields) . " WHERE id = ?";
+            $stmt = $pdo->prepare($sql);
+            $stmt->execute($params);
+
+            // Обновляем данные в сессии (если нужно)
+            $_SESSION['user_name'] = $updateName; // опционально
+
             $success = 'Profile updated successfully!';
-            // Обновляем сессию
-            $_SESSION['user_name'] = $newName;
-        } catch (PDOException $e) {
-            $error = 'Database error occurred.';
+            // Обновляем $user для отображения
+            $user['name'] = $updateName;
+            $user['email'] = $updateEmail;
+            $user['avatar'] = $avatarPath;
         }
     }
 }

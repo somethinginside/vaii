@@ -1,6 +1,8 @@
 <?php
+session_start();
 $pageTitle = 'Products — Unicorns World';
 include 'config.php';
+
 
 // ✅ Получаем все товары
 $stmt = $pdo->prepare("
