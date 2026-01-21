@@ -4,7 +4,7 @@ $pageTitle = 'Products — Unicorns World';
 include 'config.php';
 
 
-// ✅ Получаем все товары
+// Получаем все товары
 $stmt = $pdo->prepare("
     SELECT p.*
     FROM Product p 

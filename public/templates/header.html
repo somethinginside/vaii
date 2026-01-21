@@ -7,6 +7,12 @@
 
     <!-- ✅ Подключаем style.css -->
     <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/admin.css">
+    <link rel="stylesheet" href="css/card.css">
+    <link rel="stylesheet" href="css/filters.css">
+    <?php if (isset($additionalCss)): ?>
+        <link rel="stylesheet" href="<?= $additionalCss ?>">
+    <?php endif; ?>
 </head>
 <body>
     <?php if (!empty($_SESSION['error'])): ?>

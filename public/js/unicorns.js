@@ -2,8 +2,9 @@ let selectedAge = '';
 let selectedColor = '';
 
 document.addEventListener('DOMContentLoaded', function () {
-
-
+    console.log('us loaded')
+    
+    //Filters
     const filterButton = document.getElementById('filter-button');
     const dropdown = document.getElementById('dropdown-content');
 
@@ -165,28 +166,83 @@ function updateActiveFiltersDisplay() {
     container.insertBefore(display, document.getElementById('unicorns-container'));
 }
 
-// Modal functions (only for logged-in users)
+// === МОДАЛЬНОЕ ОКНО ===
 function openUnicornModal(unicornId) {
     fetch(`/get_unicorn.php?id=${unicornId}`)
         .then(res => res.json())
         .then(data => {
             if (data.success) {
                 const u = data.unicorn;
+                const isInFavourites = data.is_in_favourites || false;
+
                 document.getElementById('modal-content').innerHTML = `
-                    <img src="${u.image}" alt="${u.name}" style="width: 100%; border-radius: 12px; margin-bottom: 20px; max-height: 300px; object-fit: cover;">
+                    <img src="${u.image}" 
+                         style="width:100%; border-radius:12px; margin-bottom:20px; max-height:300px; object-fit:cover;">
                     <h2>${u.name}</h2>
                     <p><strong>Age:</strong> ${u.age} years</p>
                     <p><strong>Color:</strong> ${u.color}</p>
-                    <p><strong>Admin:</strong> ${u.admin_name || '—'}</p>
-                    <div style="margin-top: 20px;">
+                    <div style="margin-top:20px;">
                         <h3>Description</h3>
                         <p>${u.description}</p>
                     </div>
+                    <button id="modal-favourite-btn"
+                            style="margin-top: 20px; background: ${isInFavourites ? '#28a745' : 'linear-gradient(135deg, #6e8efb 0%, #a777e3 100%)'}; color: white; border: none; padding: 10px 20px; border-radius: 20px; cursor: pointer; width: 100%;">
+                        ${isInFavourites ? '✓ In Favourites' : '☆ Add to Favourites'}
+                    </button>
                 `;
+
                 document.getElementById('unicorn-modal').style.display = 'flex';
+
+                // Навешиваем обработчик
+                document.getElementById('modal-favourite-btn').addEventListener('click', function () {
+                    toggleFavourite(unicornId, isInFavourites);
+                });
             }
         })
-        .catch(err => console.error('Modal load error:', err));
+        .catch(err => {
+            console.error('Modal load error:', err);
+            alert('Failed to load unicorn details.');
+        });
+}
+
+// === ПЕРЕКЛЮЧЕНИЕ ИЗБРАННОГО ===
+async function toggleFavourite(unicornId, currentlyInFavourites) {
+    const action = currentlyInFavourites ? 'remove' : 'add';
+    const btn = document.getElementById('modal-favourite-btn');
+
+    try {
+        const response = await fetch('/toggle_favourite.php', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                unicorn_id: parseInt(unicornId),
+                action: action
+            })
+        });
+
+        const text = await response.text();
+        if (text.trim().startsWith('<')) {
+            throw new Error('Server returned HTML instead of JSON');
+        }
+
+        const data = JSON.parse(text);
+        if (data.success) {
+            // Обновляем кнопку
+            if (data.is_in_favourites) {
+                btn.innerHTML = '✓ In Favourites';
+                btn.style.background = '#28a745';
+            } else {
+                btn.innerHTML = '☆ Add to Favourites';
+                btn.style.background = 'linear-gradient(135deg, #6e8efb 0%, #a777e3 100%)';
+                btn.disabled = false;
+            }
+        } else {
+            alert('Error: ' + (data.error || 'Unknown error'));
+        }
+    } catch (err) {
+        console.error('[Favourites] Error:', err);
+        alert('Failed to update favourites. Check console for details.');
+    }
 }
 
 function closeUnicornModal() {
@@ -194,4 +250,16 @@ function closeUnicornModal() {
     if (modal) {
         modal.style.display = 'none';
     }
+}
+
+function removeFromFavourites(unicornId, button) {
+    fetch('/toggle_favourite.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ unicorn_id: unicornId, action: 'remove' })
+    })
+        .then(r => r.json())
+        .then(data => {
+            if (data.success) button.closest('.product-card').remove();
+        });
 }

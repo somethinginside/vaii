@@ -15,17 +15,18 @@
 <script src="js/mobile_menu.js"></script>
 
 <?php if (basename($_SERVER['PHP_SELF']) === 'products.php'): ?>
-    <script src="js/products.js"></script>
+<script src="js/products.js"></script>
 <?php endif; ?>
 
-<?php if (basename($_SERVER['PHP_SELF']) === 'unicorns.php'): ?>
-    <script src="js/unicorns.js"></script>
+<?php
+ if (basename($_SERVER['PHP_SELF']) === 'unicorns.php' || basename($_SERVER['PHP_SELF']) === 'favourites.php'): ?>
+<script src="js/unicorns.js"></script>
 <?php endif; ?>
 
 <script src="<?php echo $jsFile ?? 'js/main.js'; ?>" defer></script>
 
 <?php if (isset($additionalJs)): ?>
-    <script src="<?= $additionalJs ?>"></script>
+<script src="<?= $additionalJs ?>"></script>
 <?php endif; ?>
 
 

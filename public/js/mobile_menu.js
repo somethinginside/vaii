@@ -1,4 +1,4 @@
-// ✅ Данные для меню
+// Данные для меню
 const menuData = {
     admin: [
         { href: 'dashboard.php', text: 'Admin Dashboard' },
@@ -8,6 +8,7 @@ const menuData = {
         { href: 'unicorns.php', text: 'Unicorns' },
         { href: 'products.php', text: 'Products' },
         { href: 'cart.php', text: 'Cart (<span class="cart-count">0</span>)' },
+        {href: 'favourites.php', text: 'Favourites'},
         { href: 'dashboard.php', text: 'Profile' },
         { href: 'logout.php', text: 'Logout' }
     ],
@@ -21,8 +22,8 @@ const menuData = {
 
 document.addEventListener('DOMContentLoaded', function () {
     console.log('Menu loaded');
-    
-    // ✅ Определяем тип пользователя
+   
+    //  Определяем тип пользователя
     const userData = window.userData || { isLoggedIn: false, role: null };
     let links = menuData.guest;
     
@@ -32,7 +33,7 @@ document.addEventListener('DOMContentLoaded', function () {
     
     console.log('User data:', userData);
 
-    // ✅ Создаём десктопное меню
+    //  Создаём десктопное меню
     function createDesktopMenu() {
         const container = document.getElementById('desktop-nav-links');
         if (!container) return;
@@ -49,7 +50,7 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
-    // ✅ Создаём мобильное меню
+    //  Создаём мобильное меню
     function createMobileMenu() {
         const container = document.getElementById('mobile-nav-links');
         if (!container) return;
@@ -59,9 +60,9 @@ document.addEventListener('DOMContentLoaded', function () {
             const a = document.createElement('a');
             a.href = link.href;
             a.className = 'nav-link';
-            a.style.color = '#2c3e50'; // ✅ Исправлен цвет
+            a.style.color = '#2c3e50'; //  Исправлен цвет
             a.style.textDecoration = 'none';
-            a.style.padding = '15px 20px'; // ✅ Убран пробел
+            a.style.padding = '15px 20px'; //  Убран пробел
             a.style.display = 'block';
             a.style.borderBottom = '1px solid #eee';
             a.innerHTML = link.text;
@@ -69,11 +70,11 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
-    // ✅ Инициализация меню
+    //  Инициализация меню
     createDesktopMenu();
     createMobileMenu();
     
-    // ✅ Обновляем корзину
+    //  Обновляем корзину
     updateCartCount();
 });
 
@@ -82,7 +83,7 @@ function toggleMobileMenu() {
     if (menu) menu.classList.toggle('active');
 }
 
-// ✅ Закрываем меню при клике вне его
+//  Закрываем меню при клике вне его
 document.addEventListener('click', function (event) {
     const menu = document.querySelector('.mobile-navbar-links');
     const toggleBtn = document.querySelector('.mobile-menu-toggle');
@@ -92,9 +93,9 @@ document.addEventListener('click', function (event) {
     }
 });
 
-// ✅ Обновление счётчика корзины
+//  Обновление счётчика корзины
 function updateCartCount() {
-    // ✅ Исправлено: getTime() вместо getTime
+    //  Исправлено: getTime() вместо getTime
     fetch('/get_cart_count.php?' + new Date().getTime(), {
         cache: 'no-cache'
     })

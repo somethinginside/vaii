@@ -1,11 +1,10 @@
 document.addEventListener('DOMContentLoaded', function () {
     console.log('Cart JS loaded');
 
-    // ✅ Обновляем счётчик при загрузке на всех страницах
+    // Обновляем счётчик корзины
     updateCartCount();
 
-    // === CART PAGE ONLY ===
-    // === QUANTITY CONTROLS ===
+    // === УПРАВЛЕНИЕ КОЛИЧЕСТВОМ ===
     document.querySelectorAll('.quantity-btn').forEach(btn => {
         btn.addEventListener('click', function () {
             const row = this.closest('tr');
@@ -23,16 +22,18 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     });
 
-    // === REMOVE ITEM ===
-    document.querySelectorAll('.remove-btn').forEach(btn => {
+    // === УДАЛЕНИЕ ТОВАРА ===
+    document.querySelectorAll('.btn-remove').forEach(btn => {
         btn.addEventListener('click', function () {
-            const row = this.closest('tr');
-            const productId = row.dataset.id;
-            updateCartItem(productId, 0);
+            if (confirm('Remove this item from cart?')) {
+                const row = this.closest('tr');
+                const productId = row.dataset.id;
+                updateCartItem(productId, 0);
+            }
         });
     });
 
-    // === CHECKOUT BUTTON ===
+    // === ОФОРМЛЕНИЕ ЗАКАЗА ===
     const checkoutBtn = document.getElementById('checkout-btn');
     if (checkoutBtn) {
         checkoutBtn.addEventListener('click', function () {
@@ -41,22 +42,63 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 });
 
-// === ADD TO CART ===
-function addToCart(productId, quantity) {
-    console.log('addToCart called with:', { product_id: productId, quantity: quantity });
+// === ОБНОВЛЕНИЕ ЭЛЕМЕНТА КОРЗИНЫ ===
+function updateCartItem(productId, quantity) {
+    fetch('/update_cart.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ product_id: parseInt(productId), quantity: parseInt(quantity) })
+    })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                const row = document.querySelector(`tr[data-id="${productId}"]`);
+                if (!row) return;
 
-    // ✅ Проверим, что productId — число
+                if (quantity === 0) {
+                    // Удаляем строку
+                    row.remove();
+                } else {
+                    // Обновляем количество
+                    row.querySelector('.quantity-value').textContent = quantity;
+                    // Обновляем итог по строке
+                    const pricePerItem = parseFloat(row.cells[1].textContent.replace('$', ''));
+                    row.cells[3].textContent = '$' + (pricePerItem * quantity).toFixed(2);
+                }
+                // Обновляем общую сумму
+                updateTotalPrice();
+            } else {
+                alert('Error: ' + (data.error || 'Failed to update cart'));
+            }
+        })
+        .catch(err => {
+            console.error('Update cart error:', err);
+            alert('Network error. Please try again.');
+        });
+}
+
+// === ОБНОВЛЕНИЕ ОБЩЕЙ СУММЫ ===
+function updateTotalPrice() {
+    let total = 0;
+    document.querySelectorAll('tr[data-id]').forEach(row => {
+        const priceText = row.cells[1].textContent.replace('$', '');
+        const qty = parseInt(row.querySelector('.quantity-value').textContent);
+        total += parseFloat(priceText) * qty;
+    });
+    const totalEl = document.getElementById('total-price');
+    if (totalEl) {
+        totalEl.textContent = total.toFixed(2);
+    }
+}
+
+// === ДОБАВЛЕНИЕ В КОРЗИНУ (для других страниц) ===
+function addToCart(productId, quantity = 1) {
     if (!productId || isNaN(productId) || productId <= 0) {
         console.error('Invalid product_id:', productId);
-        alert('Invalid product ID');
         return;
     }
-
-    // ✅ Проверим, что quantity — число
     if (!quantity || isNaN(quantity) || quantity <= 0) {
-        console.error('Invalid quantity:', quantity);
-        alert('Invalid quantity');
-        return;
+        quantity = 1;
     }
 
     fetch('/add_to_cart.php', {
@@ -64,47 +106,22 @@ function addToCart(productId, quantity) {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ product_id: parseInt(productId), quantity: parseInt(quantity) })
     })
-        .then(response => {
-            console.log('Response status:', response.status);
-            return response.json();
-        })
-        .then(data => {
-            console.log('Response data:', data);
-            if (data.success) {
-                //alert('Product added to cart!');
-                updateCartCount(); // ✅ Обновляем счётчик
-            } else {
-                alert('Error adding to cart: ' + (data.error || 'Unknown error'));
-            }
-        })
-        .catch(err => {
-            console.error('Fetch error:', err);
-            alert('Network error');
-        });
-}
-
-// === UPDATE CART VIA AJAX ===
-function updateCartItem(productId, quantity) {
-    fetch('/update_cart.php', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ product_id: productId, quantity: quantity })
-    })
         .then(response => response.json())
         .then(data => {
             if (data.success) {
-                location.reload(); // ✅ Перезагружаем для обновления
+                updateCartCount();
+                // Можно добавить всплывающее уведомление
             } else {
-                alert('Error updating cart: ' + (data.error || 'Unknown error'));
+                alert('Error: ' + (data.error || 'Could not add to cart'));
             }
         })
         .catch(err => {
-            console.error('Fetch error:', err);
+            console.error('Add to cart error:', err);
             alert('Network error');
         });
 }
 
-// === UPDATE CART COUNT ===
+// === ОБНОВЛЕНИЕ СЧЁТЧИКА КОРЗИНЫ ===
 function updateCartCount() {
     fetch('/get_cart_count.php')
         .then(response => response.json())
@@ -116,7 +133,5 @@ function updateCartCount() {
                 }
             }
         })
-        .catch(err => {
-            console.error('Fetch error:', err);
-        });
+        .catch(err => console.error('Cart count error:', err));
 }

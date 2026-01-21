@@ -23,7 +23,7 @@
                     <button type="submit" class="btn btn-primary">Login</button>
                 </form>
 
-                <!-- ✅ Кнопка выхода для заблокированных -->
+                <!--Кнопка выхода для заблокированных -->
                 <?php if (!empty($error) && isset($_SESSION['user_id'])): ?>
                 <p style="text-align: center; margin-top: 20px;">
                     <a href="logout.php" style="color: #dc3545;">Logout</a>

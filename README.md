@@ -5,7 +5,7 @@ How to Run
 1. Install [OpenServer](https://ospanel.io/)
 2. Place the project in the folder home/unicornsworld.local/public/
 3. Start OpenServer and create a virtual host unicornsworld.local
-4. Create a database unicorns_world and run the SQL schema (see schema.sql)
+4. Create a database unicorns_world and run the SQL schema 
 5. Launch the site: http://unicornsworld.local
 
 User Roles

@@ -1,4 +1,4 @@
-// ✅ Объявляем переменные
+//  Объявляем переменные
 let selectedCategory = '';
 let selectedPriceSort = 'default';
 let selectedNameFilter = '';
@@ -20,18 +20,18 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
-    // ✅ Все элементы категорий и сортировки
+    //  Все элементы категорий и сортировки
     const categoryItems = document.querySelectorAll('.dropdown-item[data-category]');
     const priceSortItems = document.querySelectorAll('.dropdown-item[data-price-sort]');
     const nameInput = document.getElementById('name-filter-input');
 
-    // ✅ Вспомогательная функция для обновления фильтров
+    //  Вспомогательная функция для обновления фильтров
     function refreshFilters() {
         applyFilters();
         updateActiveFiltersDisplay();
     }
 
-    // ✅ Категории
+    //  Категории
     categoryItems.forEach(item => {
         item.addEventListener('click', function () {
             selectedCategory = this.getAttribute('data-category');
@@ -41,7 +41,7 @@ document.addEventListener('DOMContentLoaded', function () {
             refreshFilters();
         });
 
-        // ✅ Hover-эффект
+        //  Hover-эффект
         item.addEventListener('mouseenter', () => {
             if (!item.classList.contains('active')) {
                 item.style.backgroundColor = '#f0f5ff';
@@ -54,7 +54,7 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     });
 
-    // ✅ Сортировка по цене
+    //  Сортировка по цене
     priceSortItems.forEach(item => {
         item.addEventListener('click', function () {
             selectedPriceSort = this.getAttribute('data-price-sort');
@@ -64,7 +64,7 @@ document.addEventListener('DOMContentLoaded', function () {
             refreshFilters();
         });
 
-        // ✅ Hover-эффект
+        //  Hover-эффект
         item.addEventListener('mouseenter', () => {
             if (!item.classList.contains('active')) {
                 item.style.backgroundColor = '#f0f5ff';
@@ -77,7 +77,7 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     });
 
-    // ✅ Поиск по названию
+    //  Поиск по названию
     if (nameInput) {
         let debounceTimer;
         nameInput.addEventListener('input', function () {
@@ -89,7 +89,7 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
-    // ✅ Закрытие выпадающего меню при клике вне его
+    //  Закрытие выпадающего меню при клике вне его
     document.addEventListener('click', function (event) {
         if (
             dropdown.style.display === 'block' &&
@@ -102,7 +102,7 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
 
-    // ✅ Add to cart
+    //  Add to cart
     document.querySelectorAll('.add-to-cart-btn').forEach(btn => {
         btn.addEventListener('click', function () {
             const id = this.getAttribute('data-id');
@@ -111,7 +111,7 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 });
 
-// ✅ Применение фильтров
+//  Применение фильтров
 function applyFilters() {
     const products = document.querySelectorAll('.product-card');
 
@@ -152,7 +152,7 @@ function applyFilters() {
     }
 }
 
-// ✅ Отображение активных фильтров под заголовком
+//  Отображение активных фильтров под заголовком
 function updateActiveFiltersDisplay() {
     const container = document.querySelector('.container');
     const existing = container.querySelector('.active-filters-display');
@@ -245,7 +245,7 @@ function updateActiveFiltersDisplay() {
     container.insertBefore(display, document.getElementById('products-container'));
 }
 
-// ✅ Добавление в корзину
+//  Добавление в корзину
 function addToCart(productId) {
     fetch('/add_to_cart.php', {
         method: 'POST',

@@ -1,59 +1,63 @@
         <div class="container">
-            <h2>Your Cart</h2>
 
-            <?php if (empty($cartItems)): ?>
-            <p>Your cart is empty.</p>
-            <a href="products.php" class="btn btn-primary">Continue Shopping</a>
-            <?php else: ?>
-            <div style="overflow-x: auto;">
-                <table class="cart-table" style="width: 100%; border-collapse: collapse; margin-bottom: 20px;">
-                    <thead>
-                        <tr>
-                            <th>Product</th>
-                            <th>Price</th>
-                            <th>Quantity</th>
-                            <th>Total</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <?php foreach ($cartItems as $item): ?>
-                        <tr data-id="<?= $item['product']['id'] ?>">
-                            <td>
-                                <img src="<?= htmlspecialchars($item['product']['image']) ?>" alt="<?= htmlspecialchars($item['product']['name']) ?>" width="60" style="border:1px solid #eee; border-radius: 6px;">
-                                <span style="margin-left: 10px;"><?= htmlspecialchars($item['product']['name']) ?></span>
-                            </td>
-                            <td>$<?= number_format($item['product']['price'], 2) ?></td>
-                            <td>
-                                <div class="quantity-controls">
-                                    <button class="btn btn-secondary quantity-btn minus" data-action="decrease">-</button>
-                                    <span class="quantity-value"><?= (int)$item['quantity'] ?></span>
-                                    <button class="btn btn-secondary quantity-btn plus" data-action="increase">+</button>
-                                </div>
-                            </td>
-                            <td>$<?= number_format($item['product']['price'] * $item['quantity'], 2) ?></td>
-                            <td>
-                                <button class="btn btn-danger remove-btn">Remove</button>
-                            </td>
-                        </tr>
-                        <?php endforeach; ?>
-                    </tbody>
-                </table>
-            </div>
 
-            <div style="text-align: right; font-size: 18px; font-weight: bold; margin-bottom: 20px;">
-                Total: $<span id="total-price">
-                    <?= number_format(array_sum(array_map(function($item) {
-                    return $item['product']['price'] * $item['quantity'];
-                    }, $cartItems)), 2) ?>
-                </span>
-            </div>
+    <?php if (empty($cartItems)): ?>
+    <p>Your cart is empty.</p>
+    <a href="products.php" class="btn-primary">Continue Shopping</a>
+    <?php else: ?>
+    <div class="cart-table">
+        <h2 class="table-header">Your Cart</h2>
+        <table class="cart-table">
+            <thead>
+                <tr>
+                    <th>Product</th>
+                    <th>Price</th>
+                    <th>Quantity</th>
+                    <th>Total</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php foreach ($cartItems as $item): ?>
+                <tr data-id="<?= $item['product']['id'] ?>">
+                    <td>
+                        <img src="<?= htmlspecialchars($item['product']['image']) ?>"
+                             alt="<?= htmlspecialchars($item['product']['name']) ?>"
+                             class="cart-product-image">
+                        <span class="cart-product-name"><?= htmlspecialchars($item['product']['name']) ?></span>
+                    </td>
+                    <td>$<?= number_format($item['product']['price'], 2) ?></td>
+                    <td>
+                        <div class="quantity-controls">
+                            <button class="quantity-btn minus" data-action="decrease">-</button>
+                            <span class="quantity-value"><?= (int)$item['quantity'] ?></span>
+                            <button class="quantity-btn plus" data-action="increase">+</button>
+                        </div>
+                    </td>
+                    <td>$<?= number_format($item['product']['price'] * $item['quantity'], 2) ?></td>
+                    <td>
+                        <button class="btn-remove">Remove</button>
+                    </td>
+                </tr>
+                <?php endforeach; ?>
+            </tbody>
+        </table>
+    </div>
 
-            <div>
-                <a href="products.php" class="btn btn-secondary" style="margin-right: 10px;">Continue Shopping</a>
-                <button id="checkout-btn" class="btn btn-success">Proceed to Checkout</button>
-            </div>
+    <div class="cart-total">
+        Total: $<span id="total-price">
+            <?= number_format(array_sum(array_map(function($item) {
+            return $item['product']['price'] * $item['quantity'];
+            }, $cartItems)), 2) ?>
+        </span>
+    </div>
 
-            <?php endif; ?>
+    <div class="cart-actions">
+        <a href="products.php" class="btn-secondary">Continue Shopping</a>
+        <button id="checkout-btn" class="btn-checkout">Proceed to Checkout</button>
+        <a href="dashboard.php" class="btn-secondary">Back to Dashboard</a>
+    </div>
 
-        </div>
+    <?php endif; ?>
+
+</div>

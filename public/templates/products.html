@@ -1,46 +1,21 @@
         <div class="container">
-            <h2>Our Products</h2>
+            <h2 class="rec-pro">Our Products</h2>
 
             <?php if (empty($products)): ?>
-            <p>No products available.</p>
+                <p>No products available.</p>
             <?php else: ?>
-            <!-- ✅ Кастомное выпадающее меню с категориями -->
-            <div class="custom-dropdown" style="position: relative; display: inline-block; margin-bottom: 20px;">
-                <button class="dropdown-btn" id="filter-button" style="
-                                background: linear-gradient(135deg, #6e8efb 0%, #a777e3 100%);
-                                color: white;
-                                padding: 12px 20px;
-                                border: none;
-                                border-radius: 30px;
-                                cursor: pointer;
-                                font-size: 16px;
-                                display: flex;
-                                align-items: center;
-                                gap: 10px;
-                                box-shadow: 0 4px 15px rgba(110, 142, 251, 0.3);
-                                transition: all 0.3s ease;
-                            ">
+            <div class="custom-dropdown">
+                <button class="dropdown-btn" id="filter-button">
                     <span>Filter Products</span>
                     <svg width="12" height="8" viewBox="0 0 12 8" fill="none" xmlns="http://www.w3.org/2000/svg" style="transition: transform 0.3s ease;">
                         <path d="M1 1L6 6L11 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
                     </svg>
                 </button>
 
-                <div id="dropdown-content" class="dropdown-content" style="
-                                    position: absolute;
-                                    background: white;
-                                    min-width: 250px;
-                                    box-shadow: 0 8px 25px rgba(0,0,0,0.15);
-                                    border-radius: 12px;
-                                    z-index: 1000;
-                                    display: none;
-                                    margin-top: 8px;
-                                    overflow: hidden;
-                                    border: 1px solid #eee;
-                                ">
-                    <!-- ✅ Фильтр по категории -->
+                <div id="dropdown-content" class="dropdown-content">
+                    <!--  Фильтр по категории -->
                     <div class="filter-section">
-                        <div class="filter-title" style="padding: 10px 15px; font-weight: bold; border-bottom: 1px solid #f0f0f0;">Category</div>
+                        <div class="filter-title">Category</div>
                         <div class="dropdown-item" data-category="">
                             All Categories
                         </div>
@@ -54,9 +29,9 @@
                         </div>
                         <?php endforeach; ?>
                     </div>
-                    <!-- ✅ Фильтр по цене -->
+                    <!-- Фильтр по цене -->
                     <div class="filter-section">
-                        <div class="filter-title" style="padding: 10px 15px; font-weight: bold; border-bottom: 1px solid #f0f0f0;">Price Sort</div>
+                        <div class="filter-title">Price Sort</div>
                         <div class="dropdown-item" data-price-sort="default">
                             Default Order
                         </div>
@@ -68,49 +43,29 @@
                         </div>
                     </div>
 
-                    <!-- ✅ Фильтр по названию -->
+                    <!--  Фильтр по названию -->
                     <div class="filter-section">
-                        <div class="filter-title" style="padding: 10px 15px; font-weight: bold; border-bottom: 1px solid #f0f0f0;">Name Filter</div>
-                        <input type="text" id="name-filter-input" placeholder="Search by name..." style="
-                                            width: 100%;
-                                            padding: 10px 15px;
-                                            border: none;
-                                            border-bottom: 1px solid #f0f0f0;
-                                            outline: none;
-                                        ">
+                        <div class="filter-title">Name Filter</div>
+                        <input type="text" id="name-filter-input" placeholder="Search by name...">
                     </div>
                 </div>
             </div>
-            <div id="products-container" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 20px;">
+            <div id="products-container" class="card-grid">
                 <?php foreach ($products as $product): ?>
                 <div class="product-card"
-                     data-category="<?= htmlspecialchars($product['category']) ?>"
-                     style="border: 1px solid #eee; border-radius: 8px; padding: 15px; background: white; text-align: center; position: relative;">
+                     data-category="<?= htmlspecialchars($product['category']) ?>">
                     <img src="<?= htmlspecialchars($product['image']) ?>"
                          alt="<?= htmlspecialchars($product['name']) ?>"
                          width="100%"
-                         style="border-radius: 6px; margin-bottom: 10px; <?= $product['stock_quantity'] <= 0 ? 'filter: blur(3px); opacity: 0.6;' : '' ?>">
+                         class="card-image" <?= $product['stock_quantity'] <= 0 ? 'unavailable-blur' : '' ?>">
                     <?php if ($product['stock_quantity'] <= 0): ?>
-                        <div style="
-                                position: absolute;
-                                top: 50%;
-                                left: 50%;
-                                transform: translate(-50%, -50%);
-                                background: rgba(0,0,0,0.7);
-                                color: white;
-                                padding: 6px 12px;
-                                border-radius: 20px;
-                                font-size: 0.9em;
-                                font-weight: bold;
-                                z-index: 2;
-
-                        ">Not available now</div>
+                        <div class="not-available-overlay">Not available now</div>
                     <?php endif; ?>
-                    <h3><?= htmlspecialchars($product['name']) ?></h3>
-                    <p><?= htmlspecialchars($product['description']) ?></p>
-                    <p class="price">$<?= number_format($product['price'], 2) ?></p>
+                    <h3 class="card-title"><?= htmlspecialchars($product['name']) ?></h3>
+                    <p class="card-text"><?= htmlspecialchars($product['description']) ?></p>
+                    <p class="card-text"><strong>$<?= number_format($product['price'], 2) ?></strong></p>
                     <?php if (isset($_SESSION['user_id']) && $product['stock_quantity'] > 0): ?>
-                        <button class="btn btn-primary add-to-cart-btn" data-id="<?= $product['id'] ?>">Add to Cart</button>
+                        <button class="card-btn add-to-cart-btn" data-id="<?= $product['id'] ?>">Add to Cart</button>
                     <?php endif; ?>
                 </div>
                 <?php endforeach; ?>

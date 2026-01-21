@@ -42,7 +42,7 @@ try {
     $stmt = $pdo->prepare("UPDATE Product SET name = ?, price = ?, stock_quantity = ?, category = ?, description = ?, image = ? WHERE id = ?");
     $stmt->execute([$name, $price, $stockQuantity, $category, $description, $image, $id]);
 
-    // ✅ Проверяем, существует ли продукт до обновления
+    // Проверяем, существует ли продукт до обновления
     $checkStmt = $pdo->prepare("SELECT id FROM Product WHERE id = ?");
     $checkStmt->execute([$id]);
     $exists = $checkStmt->fetch();

@@ -18,7 +18,7 @@ if (!$input || !isset($input['id']) || !is_numeric($input['id'])) {
 $id = (int)$input['id'];
 
 try {
-    // ? Проверяем, есть ли заказы с этим продуктом
+    // Проверяем, есть ли заказы с этим продуктом
     $stmt = $pdo->prepare("SELECT COUNT(*) FROM OrderItem WHERE product_id = ?");
     $stmt->execute([$id]);
     $orderCount = $stmt->fetchColumn();
@@ -28,7 +28,7 @@ try {
         exit;
     }
 
-    // ? Удаляем продукт
+    // Удаляем продукт
     $stmt = $pdo->prepare("DELETE FROM Product WHERE id = ?");
     $stmt->execute([$id]);
 

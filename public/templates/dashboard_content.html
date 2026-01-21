@@ -17,25 +17,24 @@
 
                 <div style="flex-shrink: 0; text-align:center;">
                     <img src="<?= htmlspecialchars($user['avatar'] ?? 'uploads/avatars/default-avatar.png') ?>"
-                         class="avatar-pr-img"
-                    >
+                         class="avatar-pr-img">
+                </div> 
+                <?php if ($user['role'] === 'admin'): ?>
+                <div>
+                    <a href="admin_unicorns.php" class="profile-btn">Manage Unicorns</a>
+                    <a href="admin_products.php" class="profile-btn">Manage Products</a>
+                    <a href="admin_orders.php" class="profile-btn">Check Orders</a>
+                    <a href="admin_users.php" class="profile-btn">Manage Users</a>
                 </div>
+                <?php else: ?>
+                <div>
+                    <a href="user_orders.php" class="profile-btn">My Orders</a>
+                    <a href="edit_profile.php" class="profile-btn">Edit Profile</a>
+                    <a href="cart.php" class="profile-btn">View Cart</a>
+                </div>
+
+                <?php endif; ?>
             </div>            
 
-            <?php if ($user['role'] === 'admin'): ?>
-            <div style="margin-top: 30px;">
-                <h3>Administrative Functions</h3>
-                <a href="admin_unicorns.php" class="btn btn-primary">Manage Unicorns</a>
-                <a href="admin_products.php" class="btn btn-primary">Manage Products</a>
-                <a href="admin_orders.php" class="btn btn-primary">Check Orders</a>
-                <a href="admin_users.php" class="btn btn-primary">Manage Users</a>
-            </div>
-            <?php else: ?>
-            <div style="margin-top: 30px">
-                <a href="user_orders.php" class="btn btn-primary">My Orders</a>
-                <a href="edit_profile.php" class="btn btn-primary">Edit Profile</a>
-                <a href="cart.php" class="btn btn-primary">View Cart</a>
-            </div>
 
-            <?php endif; ?>
         </div>

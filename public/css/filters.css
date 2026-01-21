@@ -1,0 +1,146 @@
+
+/* Контейнер выпадающего меню */
+.custom-dropdown {
+    position: relative;
+    display: inline-block;
+}
+
+/* Кнопка фильтра */
+.dropdown-btn {
+    background: linear-gradient(135deg, #6e8efb 0%, #a777e3 100%);
+    color: white;
+    padding: 12px 24px;
+    border: none;
+    border-radius: 30px;
+    cursor: pointer;
+    font-size: 16px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    box-shadow: 0 4px 15px rgba(110, 142, 251, 0.3);
+    transition: all 0.3s ease;
+}
+
+    .dropdown-btn:hover {
+        opacity: 0.9;
+        transform: translateY(-2px);
+    }
+
+    /* Стрелка */
+    .dropdown-btn svg {
+        transition: transform 0.3s ease;
+    }
+
+    .dropdown-btn.active svg {
+        transform: rotate(180deg);
+    }
+
+/* Выпадающее содержимое */
+.dropdown-content {
+    position: absolute;
+    background: white;
+    min-width: 250px;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+    border-radius: 12px;
+    z-index: 1000;
+    display: none;
+    margin-top: 8px;
+    overflow: hidden;
+    border: 1px solid #eee;
+}
+
+/* Секция фильтра (категория, цвет, возраст и т.д.) */
+.filter-section {
+    padding: 10px 0;
+}
+
+.filter-title {
+    padding: 10px 15px;
+    font-weight: bold;
+    border-bottom: 1px solid #f0f0f0;
+    color: #2c3e50;
+    font-size: 0.95em;
+}
+
+/* Элементы фильтра */
+.dropdown-item {
+    padding: 10px 15px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    font-size: 0.95em;
+    color: #333;
+}
+
+    .dropdown-item:hover {
+        background-color: #f0f5ff;
+    }
+
+    .dropdown-item.active {
+        background: linear-gradient(135deg, #6e8efb 0%, #a777e3 100%);
+        color: white;
+    }
+
+/* Поле поиска по названию */
+#name-filter-input {
+    width: 100%;
+    padding: 10px 15px;
+    border: none;
+    border-bottom: 1px solid #f0f0f0;
+    outline: none;
+    font-size: 0.95em;
+}
+
+    #name-filter-input:focus {
+        border-bottom-color: #6e8efb;
+    }
+
+/* Блок активных фильтров */
+.active-filters-display {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin: 10px 0 20px;
+    padding: 12px;
+    background: #f8f9fa;
+    border-radius: 10px;
+    border: 1px solid #e9ecef;
+}
+
+    .active-filters-display span {
+        background: linear-gradient(135deg, #6e8efb 0%, #a777e3 100%);
+        color: white;
+        padding: 6px 14px;
+        border-radius: 20px;
+        font-size: 0.9em;
+        cursor: pointer;
+        transition: opacity 0.2s;
+    }
+
+        .active-filters-display span:hover {
+            opacity: 0.9;
+        }
+/* Активные фильтры под заголовком */
+.active-filters-display {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin: 10px 0 20px;
+    padding: 10px;
+    background: #f8f9fa;
+    border-radius: 8px;
+    border: 1px solid #e9ecef;
+}
+
+.filter-tag {
+    background: linear-gradient(135deg, #6e8efb 0%, #a777e3 100%);
+    color: white;
+    padding: 5px 12px;
+    border-radius: 16px;
+    font-size: 13px;
+    cursor: pointer;
+    transition: opacity 0.2s;
+}
+
+    .filter-tag:hover {
+        opacity: 0.9;
+    }

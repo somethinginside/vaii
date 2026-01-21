@@ -1,0 +1,26 @@
+<div class="container">
+    <h2>My Favourites</h2>
+
+    <?php if (empty($favourites)): ?>
+    <p>You have no favourites yet.</p>
+    <?php else: ?>
+    <div id="unicorns-container" class="card-grid">
+        <?php foreach ($favourites as $unicorn): ?>
+        <div class="product-card">
+            <img src="<?= htmlspecialchars($unicorn['image']) ?>" 
+                 alt="<?= htmlspecialchars($unicorn['name']) ?>" 
+                 class="card-image">
+            <h3 class="cart-title"><?= htmlspecialchars($unicorn['name']) ?></h3>
+            <p class="card-text">Age: <?= $unicorn['age'] ?> years</p>
+            <p class="card-text">Color: <?= htmlspecialchars($unicorn['color']) ?></p>
+            <p class="card-text">Description: <?= htmlspecialchars($unicorn['description']) ?></p>
+            <button type="button"
+                    onclick="removeFromFavourites(<?= (int)$unicorn['id'] ?>, this)"
+                    class="remove-fav-btn">
+                Remove
+            </button>
+        </div>
+        <?php endforeach; ?>
+    </div>
+    <?php endif; ?>
+</div>

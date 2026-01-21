@@ -3,13 +3,14 @@ $pageTitle = 'Checkout — Unicorns World';
 include 'config.php';
 include 'auth_check.php';
 
-// ✅ Проверяем, вошёл ли пользователь
+
+// Проверяем, вошёл ли пользователь
 if (!isset($_SESSION['user_id'])) {
     header('Location: login.php');
     exit;
 }
 
-// ✅ Получаем товары в корзине
+//Получаем товары в корзине
 $cartItems = [];
 $total = 0;
 
@@ -36,7 +37,7 @@ if (isset($_SESSION['cart']) && is_array($_SESSION['cart'])) {
     }
 }
 
-// ✅ Обработка формы
+// Обработка формы
 $message = '';
 $error = '';
 
@@ -45,14 +46,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $error = 'Your cart is empty.';
     } else {
         try {
-            // ✅ Начинаем транзакцию
+            //Начинаем транзакцию
             $pdo->beginTransaction();
 
-            // ✅ Создаём заказ
+            // Создаём заказ
             $shipping_address = trim($_POST['shipping_address']);
             $phone = trim($_POST['phone']);
 
-            // ✅ Валидация (минимум)
+            // Валидация (минимум)
             if (empty($shipping_address) || empty($phone)) {
                 // ошибка
             }
@@ -70,28 +71,28 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             $orderId = $pdo->lastInsertId();
 
-            // ✅ Добавляем товары в OrderItem
+            // Добавляем товары в OrderItem
             foreach ($cartItems as $item) {
                 $stmt = $pdo->prepare("INSERT INTO OrderItem (order_id, product_id, quantity, subtotal) VALUES (?, ?, ?, ?)");
                 $stmt->execute([$orderId, $item['product']['id'], $item['quantity'], $item['subtotal']]);
                 
-                // ✅ Обновляем остатки
+                //Обновляем остатки
                 $stmt = $pdo->prepare("UPDATE Product SET stock_quantity = stock_quantity - ? WHERE id = ?");
                 $stmt->execute([$item['quantity'], $item['product']['id']]);
             }
 
-            // ✅ Очищаем корзину
+            //  Очищаем корзину
             unset($_SESSION['cart']);
 
-            // ✅ Коммитим транзакцию
+            //  Коммитим транзакцию
             $pdo->commit();
 
             $message = 'Order placed successfully! Your order ID is #' . $orderId;
-            $cartItems = []; // ✅ Очищаем для отображения
+            $cartItems = []; //  Очищаем для отображения
             $total = 0;
 
         } catch (Exception $e) {
-            // ✅ Откатываем транзакцию
+            // Откатываем транзакцию
             $pdo->rollback();
             $error = 'Error placing order: ' . $e->getMessage();
         }

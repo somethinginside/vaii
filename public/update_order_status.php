@@ -18,7 +18,7 @@ if (!$input || !isset($input['id']) || !isset($input['status'])) {
 $orderId = (int)$input['id'];
 $newStatus = trim($input['status']);
 
-// ✅ Проверяем, что статус допустим
+//  Проверяем, что статус допустим
 $allowedStatuses = ['created', 'shipped', 'ready', 'done'];
 if (!in_array($newStatus, $allowedStatuses)) {
     http_response_code(400);
@@ -27,7 +27,7 @@ if (!in_array($newStatus, $allowedStatuses)) {
 }
 
 try {
-    // ✅ Проверим, существует ли заказ
+    //  Проверим, существует ли заказ
     $checkStmt = $pdo->prepare("SELECT id FROM `Order` WHERE id = ?");
     $checkStmt->execute([$orderId]);
     $orderExists = $checkStmt->fetch();

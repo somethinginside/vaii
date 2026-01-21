@@ -1,22 +1,21 @@
-        <div class="container">
-    <h2>Manage Unicorns</h2>
-    <a href="add_unicorn.php" class="btn btn-primary" style="margin-bottom: 20px;">Add unicorn</a>
+<div class="container">
 
     <?php if (empty($unicorns)): ?>
     <p>No unicorns added.</p>
     <?php else: ?>
-    <div style="overflow-x: auto; background: white; border-radius: 14px; box-shadow: 0 2px 8px rgba(0,0,0,0.08);">
-        <table class="admin-table" style="width: 100%;">
+    <div class="table-container">
+        <h2 class="table-header">Manage Unicorns</h2>
+        <table class="admin-table">
             <thead>
-                <tr style="background: #f5f7fa; font-weight: bold; text-align: left;">
-                    <th class="admin-table th">ID</th>
-                    <th class="admin-table th">Name</th>
-                    <th class="admin-table th">Color</th>
-                    <th class="admin-table th">Age</th>
-                    <th class="admin-table th">Description</th>
-                    <th class="admin-table th">Image</th>
-                    <th class="admin-table th">Added By</th>
-                    <th class="admin-table th">Actions</th>
+                <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Color</th>
+                    <th>Age</th>
+                    <th>Description</th>
+                    <th>Image</th>
+                    <th>Added By</th>
+                    <th>Actions</th>
                 </tr>
             </thead>
             <tbody>
@@ -58,6 +57,6 @@
         </table>
     </div>
     <?php endif; ?>
-
-    <a href="dashboard.php" class="btn btn-primary" style="margin-top: 15px;">Back to Dashboard</a>
+    <a href="add_unicorn.php" class="profile-btn">Add unicorn</a>
+    <a href="dashboard.php" class="profile-btn">Back to Dashboard</a>
 </div>

@@ -9,7 +9,7 @@ if (!isset($_SESSION['user_id'])) {
 
 $count = 0;
 if (isset($_SESSION['cart']) && is_array($_SESSION['cart'])) {
-    $count = array_sum($_SESSION['cart']); // ? Сумма всех товаров
+    $count = array_sum($_SESSION['cart']); // Сумма всех товаров
 }
 
 echo json_encode(['success' => true, 'count' => $count]);

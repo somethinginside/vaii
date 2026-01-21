@@ -17,7 +17,7 @@ document.addEventListener('DOMContentLoaded', function () {
         const statusMessage = row.querySelector('.status-message');
         if (statusMessage) statusMessage.textContent = '';
 
-        // ✅ Показываем select, скрываем span
+        //  Показываем select, скрываем span
         const statusCell = row.querySelector('.status-cell');
         const statusText = statusCell.querySelector('.status-text');
         const statusSelect = statusCell.querySelector('.status-select');
@@ -25,7 +25,7 @@ document.addEventListener('DOMContentLoaded', function () {
         if (statusText) statusText.style.display = 'none';
         if (statusSelect) statusSelect.style.display = 'block';
 
-        // ✅ Скрываем кнопку Edit Status
+        //  Скрываем кнопку Edit Status
         button.style.display = 'none';
         const saveBtn = row.querySelector('.save-status-btn');
         const cancelBtn = row.querySelector('.cancel-status-btn');
@@ -48,7 +48,7 @@ document.addEventListener('DOMContentLoaded', function () {
             console.log('Cancel status button clicked!');
             const row = this.closest('tr');
 
-            // ✅ Скрываем select, показываем span
+            //  Скрываем select, показываем span
             const statusCell = row.querySelector('.status-cell');
             const statusText = statusCell.querySelector('.status-text');
             const statusSelect = statusCell.querySelector('.status-select');
@@ -56,7 +56,7 @@ document.addEventListener('DOMContentLoaded', function () {
             if (statusText) statusText.style.display = 'inline';
             if (statusSelect) statusSelect.style.display = 'none';
 
-            // ✅ Возвращаем кнопки в исходное состояние
+            //  Возвращаем кнопки в исходное состояние
             const editBtn = row.querySelector('.edit-status-btn');
             const saveBtn = row.querySelector('.save-status-btn');
             const cancelBtn = row.querySelector('.cancel-status-btn');
@@ -99,16 +99,16 @@ document.addEventListener('DOMContentLoaded', function () {
                         statusMessage.className = 'status-message success';
                     }
 
-                    // ✅ Обновляем span с новым статусом
+                    //  Обновляем span с новым статусом
                     const statusText = row.querySelector('.status-cell .status-text');
                     statusText.textContent = newStatus;
 
-                    // ✅ Скрываем select, показываем span
+                    //  Скрываем select, показываем span
                     const statusSelect = row.querySelector('.status-cell .status-select');
                     statusText.style.display = 'inline';
                     statusSelect.style.display = 'none';
 
-                    // ✅ Возвращаем кнопки в исходное состояние
+                    //  Возвращаем кнопки в исходное состояние
                     const editBtn = row.querySelector('.edit-status-btn');
                     const saveBtn = row.querySelector('.save-status-btn');
                     const cancelBtn = row.querySelector('.cancel-status-btn');
@@ -121,7 +121,7 @@ document.addEventListener('DOMContentLoaded', function () {
                         statusMessage.textContent = 'Error: ' + (data.error || 'Unknown error');
                         statusMessage.className = 'status-message error';
                     }
-                    // ✅ Восстанавливаем кнопки даже при ошибке
+                    //  Восстанавливаем кнопки даже при ошибке
                     const editBtn = row.querySelector('.edit-status-btn');
                     const saveBtn = row.querySelector('.save-status-btn');
                     const cancelBtn = row.querySelector('.cancel-status-btn');
@@ -135,7 +135,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     statusMessage.className = 'status-message error';
                 }
 
-                // ✅ Восстанавливаем кнопки при Network Error
+                //  Восстанавливаем кнопки при Network Error
                 const editBtn = row.querySelector('.edit-status-btn');
                 const saveBtn = row.querySelector('.save-status-btn');
                 const cancelBtn = row.querySelector('.cancel-status-btn');

@@ -1,50 +1,97 @@
-        <div class="container">
-            <!-- ✅ Hero Section with Unicorn GIF -->
-            <section style="position: relative; height: 500px; display: flex; align-items: center; justify-content: center; overflow: hidden; border-radius: 14px; margin-bottom: 40px; background: linear-gradient(135deg, #6e8efb 0%, #a777e3 100%);">
-                <!-- ✅ Unicorn GIF Background -->
-                <img src="images/hero_unicorn.gif" alt="Magical Unicorn" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; z-index: 1; opacity: 0.8;">
-
-                <!-- ✅ Overlay Content -->
-                <div style="position: relative; z-index: 2; text-align: center; color: white; padding: 20px;">
-                    <h1 style="font-size: 3em; margin-bottom: 10px; text-shadow: 2px 2px 4px rgba(0,0,0,0.3);">Welcome to Unicorns World!</h1>
-                </div>
-            </section>
-
-            <!-- ✅ Показываем "Latest Products" только если пользователь НЕ админ -->
-            <?php if (!isset($_SESSION['user_role']) || $_SESSION['user_role'] !== 'admin'): ?>
-            <section>
-                <h2 style="margin-bottom: 20px; color: #2c3e50;">Latest Products</h2>
-
-                <?php if (empty($products)): ?>
-                <p>No products available yet.</p>
-                <?php else: ?>
-                <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 20px;">
-                    <?php foreach ($products as $product): ?>
-                    <div class="product-card" style="border: 1px solid #eee; border-radius: 8px; padding: 15px; background: white; text-align: center; transition: transform 0.2s;">
-                        <img src="<?= htmlspecialchars($product['image']) ?>" alt="<?= htmlspecialchars($product['name']) ?>" width="100%" style="border-radius: 6px; margin-bottom: 10px; height: 200px; object-fit: cover;">
-
-                        <h3 style="margin: 10px 0; font-size: 18px; color: #2c3e50;"><?= htmlspecialchars($product['name']) ?></h3>
-
-                        <p style="color: #666; margin: 5px 0; font-size: 14px;"><?= htmlspecialchars($product['category']) ?></p>
-
-                        <p style="color: #666; margin: 5px 0;"><?= htmlspecialchars($product['description']) ?></p>
-
-                        <p style="font-weight: bold; margin: 10px 0; font-size: 16px; color: #27ae60;">$<?= number_format($product['price'], 2) ?></p>
-
-                        <p style="color: #999; margin: 5px 0;">Stock: <?= (int)$product['stock_quantity'] ?></p>
-
-                        <button class="btn btn-primary add-to-cart-btn"
-                                data-id="<?= $product['id'] ?>"
-                                data-quantity="1"
-                                style="margin-top: 10px;"
-                                                <?= $product['stock_quantity'] <= 0 ? 'disabled' : '' ?>>
-                                            <?= $product['stock_quantity'] <= 0 ? 'Out of Stock' : 'Add to Cart' ?>
-                                        </button>
-                    </div>
-                    <?php endforeach; ?>
-                </div>
-
-                <?php endif; ?>
-            </section>
-            <?php endif; ?>
+<div class="container">
+    <section class="hero-section">
+        <img src="images/unicorn.gif" alt="Magical Unicorn" class="unicorn-gif">
+        <div class="hero-section-overlay">
+            <h1 class="welcome-text">Welcome to Unicorns World!</h1>
         </div>
+    </section>
+    <?php if (!isset($_SESSION['user_role']) || $_SESSION['user_role'] !== 'admin'): ?>
+        <p class="welcome-desc">
+            <span class="desc-con">
+                Discover magical unicorns and unique products in our enchanted world.
+            </span>
+            <?php if (isset($_SESSION['user_id'])): ?>
+                <br><strong>✨ Enjoy your personal favourites and shopping cart!</strong>
+            <?php else: ?>
+                <br><strong>✨ Log in or register to save your favourites and shop with ease.</strong>
+            <?php endif; ?>
+        </p>
+    <?php endif; ?>
+
+    <div class="container">
+        <?php if (!isset($_SESSION['user_role']) || $_SESSION['user_role'] !== 'admin'): ?>
+        <section>
+            <h2 class="rec-pro">Recent added</h2>
+
+            <?php if (empty($products)): ?>
+            <p>No products available yet.</p>
+            <?php else: ?>
+            <div class="card-grid">
+                <?php foreach ($products as $product): ?>
+                <div class="product-card">
+                    <img src="<?= htmlspecialchars($product['image']) ?>" 
+                         alt="<?= htmlspecialchars($product['name']) ?>" 
+                         width="100%"
+                         class="card-image">
+
+                    <h3 class="card-title"><?= htmlspecialchars($product['name']) ?></h3>
+                    <p class="card-text"><?= htmlspecialchars($product['category']) ?></p>
+                    <p class="card-text">$<?= number_format($product['price'], 2) ?></p>
+                    <p class="card-text">Stock: <?= (int)$product['stock_quantity'] ?></p>
+
+                    <button class="card-btn add-to-cart-btn"
+                            data-id="<?= $product['id'] ?>"
+                            data-quantity="1"
+                        <?= $product['stock_quantity'] <= 0 ? 'disabled' : '' ?>>
+                        <?= $product['stock_quantity'] <= 0 ? 'Out of Stock' : 'Add to Cart' ?>
+                </button>
+                </div>
+                <?php endforeach; ?>
+            </div>
+            <?php endif; ?>
+        </section>
+        <?php endif; ?>
+    </div>
+    <?php if (!isset($_SESSION['user_role']) || $_SESSION['user_role'] !== 'admin'): ?>
+        <div class="container">
+            <h2 class="rec-pro">Explore More Magic</h2>
+            <div class="card-grid">
+                <!-- Сайт 1 -->
+                <a href="https://en.postposmo.com/Unicorn/" target="_blank" style="text-decoration: none; color: inherit;">
+                    <div product-card>
+                        <img src="images/artikl_1.jpg"
+                             alt="The Unicorn a famous creature from Greek mythology"
+                             class="card-image">
+                        <div style="padding: 15px; background: white;">
+                            <h3 class="card-title">The Unicorn a famous creature from Greek mythology</h3>
+                        </div>
+                    </div>
+                </a>
+
+                <!-- Сайт 2 -->
+                <a href="https://mythology.net/mythical-creatures/unicorn/" target="_blank" style="text-decoration: none; color: inherit;">
+                    <div product-card>
+                        <img src="images/artikl_2.jpg"
+                             alt="Unicorn: description, history, stories and interpretations"
+                             class="card-image">
+                        <div style="padding: 15px; background: white;">
+                            <h3 class="card-title">Unicorn: description, history, stories and interpretations</h3>
+                        </div>
+                    </div>
+                </a>
+
+                <!-- Сайт 3 -->
+                <a href="https://www.tatler.com/article/facts-about-unicorns" target="_blank" style="text-decoration: none; color: inherit;">
+                    <div product-card>
+                        <img src="images/artikl_3.jpg"
+                             alt="Everything you ever wanted to know about unicorns but were afraid to ask"
+                             class="card-image">
+                        <div style="padding: 15px; background: white;">
+                            <h3 class="card-title">Everything you ever wanted to know about unicorns but were afraid to ask</h3>
+                        </div>
+                    </div>
+                </a>
+            </div>
+        </div>
+    <?php endif; ?>
+</div>

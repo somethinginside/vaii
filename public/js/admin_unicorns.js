@@ -11,7 +11,7 @@ document.addEventListener('DOMContentLoaded', function () {
         const statusDiv = row.querySelector('.status');
         if (statusDiv) statusDiv.textContent = '';
 
-        // ✅ Показываем input, скрываем span
+        //  Показываем input, скрываем span
         row.querySelectorAll('.field').forEach(field => {
             const span = field.querySelector('.text');
             const input = field.querySelector('.edit-input');
@@ -19,7 +19,7 @@ document.addEventListener('DOMContentLoaded', function () {
             if (input) input.style.display = 'block';
         });
 
-        // ✅ Скрываем кнопку Edit
+        //  Скрываем кнопку Edit
         button.style.display = 'none';
         const saveBtn = row.querySelector('.save-btn');
         const cancelBtn = row.querySelector('.cancel-btn');
@@ -40,7 +40,7 @@ document.addEventListener('DOMContentLoaded', function () {
         btn.addEventListener('click', function () {
             const row = this.closest('tr');
 
-            // ✅ Скрываем input, показываем span
+            //  Скрываем input, показываем span
             row.querySelectorAll('.field').forEach(field => {
                 const fieldType = field.dataset.field;
                 if (fieldType !== 'image') {
@@ -58,7 +58,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
             });
 
-            // ✅ Возвращаем кнопки в исходное состояние
+            //  Возвращаем кнопки в исходное состояние
             const editBtn = row.querySelector('.edit-btn');
             const saveBtn = row.querySelector('.save-btn');
             const cancelBtn = row.querySelector('.cancel-btn');
@@ -75,7 +75,7 @@ document.addEventListener('DOMContentLoaded', function () {
             const id = row.dataset.id;
             const statusDiv = row.querySelector('.status');
 
-            // ✅ Получаем значения из input
+            // Получаем значения из input
             const nameInput = row.querySelector('.field[data-field="name"] .edit-input');
             const colorInput = row.querySelector('.field[data-field="color"] .edit-input');
             const ageInput = row.querySelector('.field[data-field="age"] .edit-input');
@@ -108,12 +108,12 @@ document.addEventListener('DOMContentLoaded', function () {
 
                 console.log('Response status:', res.status);
 
-                const responseText = await res.text(); // ✅ Получаем как текст
+                const responseText = await res.text(); // Получаем как текст
                 console.log('Raw response:', responseText);
 
                 let data;
                 try {
-                    data = JSON.parse(responseText); // ✅ Парсим JSON
+                    data = JSON.parse(responseText); //  Парсим JSON
                 } catch (parseErr) {
                     console.error('JSON parse error:', parseErr);
                     console.error('Raw response was:', responseText);
@@ -128,17 +128,17 @@ document.addEventListener('DOMContentLoaded', function () {
                         statusDiv.className = 'status success';
                     }
 
-                    // ✅ Обновляем span с новыми значениями
+                    //  Обновляем span с новыми значениями
                     row.querySelector('.field[data-field="name"] .text').textContent = name;
                     row.querySelector('.field[data-field="color"] .text').textContent = color;
                     row.querySelector('.field[data-field="age"] .text').textContent = age;
                     row.querySelector('.field[data-field="description"] .text').textContent = desc;
                     row.querySelector('.field[data-field="image"] .text').textContent = imageUrl;
 
-                    // ✅ Обновляем изображение
+                    //  Обновляем изображение
                     row.querySelector('.field[data-field="image"] img').src = imageUrl;
 
-                    // ✅ Скрываем input, показываем span
+                    // Скрываем input, показываем span
                     row.querySelectorAll('.field').forEach(field => {
                         const fieldType = field.dataset.field;
                         if (fieldType !== 'image') {
@@ -155,7 +155,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
                     });
 
-                    // ✅ Возвращаем кнопки в исходное состояние
+                    //  Возвращаем кнопки в исходное состояние
                     const editBtn = row.querySelector('.edit-btn');
                     const saveBtn = row.querySelector('.save-btn');
                     const cancelBtn = row.querySelector('.cancel-btn');
@@ -168,7 +168,7 @@ document.addEventListener('DOMContentLoaded', function () {
                         statusDiv.textContent = 'Error: ' + (data.error || 'Unknown error');
                         statusDiv.className = 'status error';
                     }
-                    // ✅ Восстанавливаем кнопки даже при ошибке
+                    //  Восстанавливаем кнопки даже при ошибке
                     const editBtn = row.querySelector('.edit-btn');
                     const saveBtn = row.querySelector('.save-btn');
                     const cancelBtn = row.querySelector('.cancel-btn');
@@ -183,7 +183,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     statusDiv.className = 'status error';
                 }
 
-                // ✅ Восстанавливаем кнопки при Network Error
+                //  Восстанавливаем кнопки при Network Error
                 const editBtn = row.querySelector('.edit-btn');
                 const saveBtn = row.querySelector('.save-btn');
                 const cancelBtn = row.querySelector('.cancel-btn');

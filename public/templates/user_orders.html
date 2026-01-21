@@ -1,30 +1,29 @@
-                <div class="container">
-            <h2>My Orders</h2>
-
+       <div class="container">
             <?php if (empty($orders)): ?>
-            <p>You have no orders yet.</p>
+                <p class="rec-pro">You have no orders yet.</p>
             <?php else: ?>
-            <div style="overflow-x: auto; background: white; border-radius: 14px; box-shadow: 0 2px 8px rgba(0,0,0,0.08);">
-                <table class="admin-table" style="width: 100%; border-collapse: collapse;">
+            <div class="table-container">
+                <h2 class="table-title">My Orders</h2>
+                <table class="admin-table">
                     <thead>
-                        <tr style="background: #f5f7fa; font-weight: bold; text-align: left;">
-                            <th style="padding: 12px 16px; border-bottom: 2px solid #ddd;">ID</th>
-                            <th style="padding: 12px 16px; border-bottom: 2px solid #ddd;">Date</th>
-                            <th style="padding: 12px 16px; border-bottom: 2px solid #ddd;">Total</th>
-                            <th style="padding: 12px 16px; border-bottom: 2px solid #ddd;">Delievery Adress</th>
-                            <th style="padding: 12px 16px; border-bottom: 2px solid #ddd;">Phone</th>
-                            <th style="padding: 12px 16px; border-bottom: 2px solid #ddd;">Status</th>
-                            <th style="padding: 12px 16px; border-bottom: 2px solid #ddd;">Items</th>
+                        <tr>
+                            <th>ID</th>
+                            <th>Date</th>
+                            <th>Total</th>
+                            <th>Delievery Adress</th>
+                            <th>Phone</th>
+                            <th>Status</th>
+                            <th>Items</th>
                         </tr>
                     </thead>
                     <tbody>
                         <?php foreach ($orders as $o): ?>
-                        <tr style="border-bottom: 1px solid #eee;">
-                            <td style="padding: 12px 16px;"><?= htmlspecialchars('#' . $o['id']) ?></td>
-                            <td style="padding: 12px 16px;"><?= htmlspecialchars($o['date']) ?></td>
-                            <td style="padding: 12px 16px;"><?= number_format($o['total_price'], 2) ?> eur.</td>
-                            <td style="padding: 12px 16px;"><?= htmlspecialchars($o['shipping_address']) ?></td>
-                            <td style="padding: 12px 16px;"><?= htmlspecialchars($o['phone']) ?></td>
+                        <tr>
+                            <td><?= htmlspecialchars('#' . $o['id']) ?></td>
+                            <td><?= htmlspecialchars($o['date']) ?></td>
+                            <td><?= number_format($o['total_price'], 2) ?> eur.</td>
+                            <td><?= htmlspecialchars($o['shipping_address']) ?></td>
+                            <td><?= htmlspecialchars($o['phone']) ?></td>
                             <td style="padding: 12px 16px; color: <?=
                                                         $o['status'] === 'created' ? '#ff9800' :
                                                         ($o['status'] === 'shipped' ? '#2196F3' :
@@ -47,5 +46,5 @@
             </div>
             <?php endif; ?>
 
-            <a href="dashboard.php" class="btn btn-primary" style="margin-top: 15px;">Back to Dashboard</a>
+            <a href="dashboard.php" class="profile-btn">Back to Dashboard</a>
         </div>

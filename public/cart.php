@@ -1,14 +1,15 @@
 <?php
 $pageTitle = 'Cart';
+$additionalCss = '/css/cart.css';
 include 'config.php';
 include 'auth_check.php';
-// ✅ Проверяем, вошёл ли пользователь
+// Проверяем, вошёл ли пользователь
 if (!isset($_SESSION['user_id'])) {
     header('Location: login.php');
     exit;
 }
 
-// ✅ Получаем товары в корзине
+// Получаем товары в корзине
 $cartItems = [];
 if (isset($_SESSION['cart']) && is_array($_SESSION['cart'])) {
     $productIds = array_keys($_SESSION['cart']);
